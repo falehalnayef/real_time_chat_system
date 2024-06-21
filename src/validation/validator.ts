@@ -8,10 +8,10 @@ export function validateRequiredFields(fields: Record<string, any>): void {
     }
 }
 
-export function isValidUserName(user_name: string): boolean {
+export function isValidUserName(userName: string): boolean {
     
     const regex = /^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})$/;
-    return regex.test(user_name);
+    return regex.test(userName);
 }
 
 

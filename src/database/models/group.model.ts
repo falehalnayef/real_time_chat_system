@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IGroupDocument, IGroupModel } from "../../interfaces/IGroup";
+import { IGroupDocument, IGroupModel } from "../../interfaces/business_interfaces/IGroup";
 
 export class GroupModel {
   private _model: IGroupModel;

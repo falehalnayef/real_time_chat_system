@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { ISavedMessageDocument, ISavedMessageModel } from "../../interfaces/ISavedMessage";
+import { ISavedMessageDocument, ISavedMessageModel } from "../../interfaces/business_interfaces/ISavedMessage";
 
 export class SavedMessageModel {
   private _model: ISavedMessageModel;

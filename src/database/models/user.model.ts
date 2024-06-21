@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IUserDocument, IUserModel } from "../../interfaces/IUser";
+import { IUserDocument, IUserModel } from "../../interfaces/business_interfaces/IUser";
 
 export class UserModel {
   private _model: IUserModel;

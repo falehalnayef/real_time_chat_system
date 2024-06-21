@@ -1,5 +1,5 @@
 import { Document, Model, ObjectId } from "mongoose";
-import { Message } from "../types/message.type";
+import { Message } from "../../types/message.type";
 
 export interface ISavedMessage {
   user: ObjectId;
