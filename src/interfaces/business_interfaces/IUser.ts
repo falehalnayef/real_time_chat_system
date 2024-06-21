@@ -1,4 +1,4 @@
-import { Document, Model, ObjectId } from "mongoose";
+import {ObjectId } from "mongoose";
 
 export interface IUser {
   userName: string;
@@ -11,6 +11,8 @@ export interface IUser {
   groups: ObjectId[];
 }
 
-export interface IUserDocument extends IUser, Document {}
+export interface IUserRepository{
 
-export interface IUserModel extends Model<IUserDocument> {}
+  addUser(userName: string, email: string, password: string): Promise<void>;
+}
+

@@ -13,7 +13,7 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
 
         if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
-        if(!isValidPassword(userName)) throw new StatusError(400, "Invalid password format.");
+        if(!isValidPassword(password)) throw new StatusError(400, "Invalid password format.");
 
         next()
 

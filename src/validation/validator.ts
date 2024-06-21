@@ -10,7 +10,7 @@ export function validateRequiredFields(fields: Record<string, any>): void {
 
 export function isValidUserName(userName: string): boolean {
     
-    const regex = /^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})$/;
+    const regex = /^[a-zA-Z0-9_-]+$/;
     return regex.test(userName);
 }
 
@@ -23,6 +23,6 @@ export function isValidEmail(email: string): boolean {
 
 export function isValidPassword(password: string): boolean {
 
-    const regex =  /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;        
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;       
     return regex.test(password);
 }
