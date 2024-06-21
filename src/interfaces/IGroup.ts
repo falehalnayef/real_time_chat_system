@@ -8,6 +8,7 @@ export interface IGroup {
   bio: string;
   date: Date;
   createdBy: ObjectId;
+  isPrivate: boolean
 
 }
 

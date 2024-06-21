@@ -7,6 +7,7 @@ export class GroupModel {
   constructor() {
     const schema = new Schema({
       groupName: { type: String, required: true },
+      isPrivate: { type: Boolean, required: true, default: true },
       bio: { type: String, required: true },
       photoPath: { type: String, required: true }, 
       date: { type: Date, required: true },
