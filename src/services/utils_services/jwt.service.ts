@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { ObjectId } from "mongoose";
 dotenv.config();
 
-export function generateAccessToken(id: number) {
-  return jwt.sign({ id }, process.env.SECRET_ACCESS_KEY!, { expiresIn: "1h" });
+export function generateAccessToken(_id: ObjectId) {
+  return jwt.sign({ _id }, process.env.SECRET_ACCESS_KEY!, { expiresIn: "1h" });
 }
 
 export function verifyToken(token: string) {

@@ -26,4 +26,21 @@ export class UserController {
       next(error);
     }
   }
+
+  
+  async login(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { email, password } = req.body;
+
+      const data = await this.userService.login(email, password);
+
+      res.status(200).send(successResponse("User is logged in", data));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 }

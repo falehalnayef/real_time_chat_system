@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../interfaces/business_interfaces/IUser";
+import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { UserModel } from "../models/user.model";
 
 export class UserRepository implements IUserRepository {
@@ -14,5 +14,13 @@ export class UserRepository implements IUserRepository {
     password: string
   ): Promise<void> {
     await this.userModel.model.create({ userName, email, password });
+  }
+
+  async getUserByEmail(
+    email: string
+  ): Promise<IUser | null> {
+    return await this.userModel.model.findOne({$where:
+      email
+    }).select("_id name password");
   }
 }

@@ -24,3 +24,25 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
     }
 
 }
+
+
+export function loginValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {email, password} = req.body;
+
+        validateRequiredFields({email, password});
+
+        if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
+        if(!isValidPassword(password)) throw new StatusError(400, "Invalid password format.");
+
+        next()
+
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}

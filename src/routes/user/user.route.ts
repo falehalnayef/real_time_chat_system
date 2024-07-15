@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../../controllers/user.controller";
-import { registerValidator } from "../../middlewares/validation.middleware";
+import { loginValidator, registerValidator } from "../../middlewares/validation.middleware";
 import { UserService } from "../../services/business_services/user.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 
@@ -20,7 +20,12 @@ class UserRoute {
     this.router
       .post("/", registerValidator, this.userController.register)
       .bind(this.userController);
+
+      this.router
+      .post("/login", loginValidator, this.userController.login)
+      .bind(this.userController);
   }
-}
+  
+}     
 
 export default new UserRoute().router;
