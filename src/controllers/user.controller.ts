@@ -21,7 +21,7 @@ export class UserController {
 
       await this.userService.register(userName, email, password);
 
-      res.status(201).send(successResponse("User is registered"));
+      res.status(201).send(successResponse("User is registered."));
     } catch (error: any) {
       next(error);
     }
@@ -38,7 +38,7 @@ export class UserController {
 
       const data = await this.userService.login(email, password);
 
-      res.status(200).send(successResponse("User is logged in", data));
+      res.status(200).send(successResponse("User is logged in.", data));
     } catch (error: any) {
       next(error);
     }
@@ -65,7 +65,7 @@ export class UserController {
         blockedUsers: user.blockedUsers,
       };
 
-      res.status(200).send(successResponse("Profile", data));
+      res.status(200).send(successResponse("Profile.", data));
     } catch (error: any) {
       next(error);
     }
@@ -79,19 +79,11 @@ export class UserController {
     try {
 
       const user = req.auth!.user;
-    
-      const data = {
-        id: user._id,
-        name: user.userName,
-        email: user.email,
-        pohtoPath: user.pohtoPath,
-        bio: user.bio,
-        groups: user.groups,
-        contacts: user.contacts,
-        blockedUsers: user.blockedUsers,
-      };
 
-      res.status(200).send(successResponse("Profile", data));
+
+      await this.userService.editProfile(user, req.body);
+
+      res.status(200).send(successResponse("Profile has been edited."));
     } catch (error: any) {
       next(error);
     }

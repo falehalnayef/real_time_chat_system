@@ -46,3 +46,27 @@ export function loginValidator(req: AuthenticatedRequest, _res: Response, next: 
     }
 
 }
+
+
+export function profileEditingValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {userName, pohtoPath, bio} = req.body;
+
+
+        if(!userName && !pohtoPath && !bio) throw new StatusError(400, "Edit somthing.");
+
+        if(userName){
+            if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");
+        }
+     
+        next()
+
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}

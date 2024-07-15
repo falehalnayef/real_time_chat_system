@@ -2,7 +2,8 @@ import { compareData, hashData } from "../utils_services/bcrypt.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
 import { generateAccessToken } from "../utils_services/jwt.service";
-import { ObjectId } from "mongoose";
+import { IUser } from "../../interfaces/business_interfaces/IUser";
+import { isValidUserName } from "../../validation/validator";
 
 export class UserService{
     
@@ -30,9 +31,32 @@ constructor(userRepository: UserRepository){
 
           return {id: user._id, name: user.userName, accessToken};
 
-
         }
 
+        async editProfile(user: IUser, updatedData: any) {
+
+          const {userName, pohtoPath, bio} = updatedData;
+
+          if(userName){
+         
+            user.userName = userName;
+         
+          }
+
+          if(pohtoPath){
+         // todo: upload image
+            user.pohtoPath = pohtoPath;
+         
+          }
+          if(bio){
+         
+            user.bio = bio;
+          }
+
+          await this.userRepository.updateUser(user);
+
+     
+         }
       
 
 } 
