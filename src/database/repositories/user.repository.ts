@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { UserModel } from "../models/user.model";
 
@@ -19,8 +20,25 @@ export class UserRepository implements IUserRepository {
   async getUserByEmail(
     email: string
   ): Promise<IUser | null> {
-    return await this.userModel.model.findOne({$where:
+    return await this.userModel.model.findOne({
       email
     }).select("_id name password");
+  }
+
+  async getUserById(
+    _id: ObjectId
+  ): Promise<IUser | null> {
+    return await this.userModel.model.findOne({
+      _id
+    });
+  }
+
+  async updateUser(
+    record: IUser
+  ): Promise<void> {
+     await this.userModel.model.updateOne({
+record
+
+});
   }
 }

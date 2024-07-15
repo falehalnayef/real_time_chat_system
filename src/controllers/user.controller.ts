@@ -43,4 +43,57 @@ export class UserController {
       next(error);
     }
   }
+
+
+  async showProfile(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+    
+      const data = {
+        id: user._id,
+        name: user.userName,
+        email: user.email,
+        pohtoPath: user.pohtoPath,
+        bio: user.bio,
+        groups: user.groups,
+        contacts: user.contacts,
+        blockedUsers: user.blockedUsers,
+      };
+
+      res.status(200).send(successResponse("Profile", data));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async editProfile(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+    
+      const data = {
+        id: user._id,
+        name: user.userName,
+        email: user.email,
+        pohtoPath: user.pohtoPath,
+        bio: user.bio,
+        groups: user.groups,
+        contacts: user.contacts,
+        blockedUsers: user.blockedUsers,
+      };
+
+      res.status(200).send(successResponse("Profile", data));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 }
