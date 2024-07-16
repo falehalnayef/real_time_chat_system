@@ -19,6 +19,7 @@
   "homepage": "https://github.com/falehalnayef/real_time_chat_system#readme",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "busboy": "^1.6.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/busboy": "^1.5.4",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mongoose": "^5.11.97",
