@@ -3,7 +3,8 @@ import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
 import { generateAccessToken } from "../utils_services/jwt.service";
 import { IUser } from "../../interfaces/business_interfaces/IUser";
-import { isValidUserName } from "../../validation/validator";
+import { FileInfo } from "../../types/fileInfo.type";
+import { uploadToCloudinary } from "../utils_services/cloudinary.service";
 
 export class UserService{
     
@@ -12,11 +13,13 @@ private userRepository: UserRepository;
 constructor(userRepository: UserRepository){
     this.userRepository = userRepository;
 }
-     async register(userName: string, email: string, password: string) {
+     async register(userName: string, email: string, password: string, bio: string, file: FileInfo) {
 
         const hashedPassword = hashData(password);
 
-        await this.userRepository.addUser(userName, email, await hashedPassword);
+       const url = uploadToCloudinary(file.data!, "image", "userProfileImages");
+
+        await this.userRepository.addUser(userName, email, await hashedPassword, bio, await url);
       }
 
 

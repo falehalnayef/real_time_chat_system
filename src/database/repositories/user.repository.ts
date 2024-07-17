@@ -12,9 +12,11 @@ export class UserRepository implements IUserRepository {
   async addUser(
     userName: string,
     email: string,
-    password: string
+    password: string,
+    bio: string,
+    photoPath: string
   ): Promise<void> {
-    await this.userModel.model.create({ userName, email, password });
+    await this.userModel.model.create({ userName, email, password , bio, photoPath});
   }
 
   async getUserByEmail(

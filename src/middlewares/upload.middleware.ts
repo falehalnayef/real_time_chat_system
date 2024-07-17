@@ -3,7 +3,7 @@ import { Response, NextFunction, Request } from "express";
 import AuthenticatedRequest from "../interfaces/utils_interfaces/IAuthenticatedRequest";
 import StatusError from "../utils/statusError";
 import { FileInfo } from "../types/fileInfo.type";
-    class UploadHandler {
+    class UploadMiddleWare {
   static allowedMimeTypes = [
     "image/png",
     "image/jpeg",
@@ -45,7 +45,7 @@ import { FileInfo } from "../types/fileInfo.type";
           fileInfo.data = buffer;
           if (
             fileInfo &&
-            !UploadHandler.allowedMimeTypes.includes(fileInfo.mimetype)
+            !UploadMiddleWare.allowedMimeTypes.includes(fileInfo.mimetype)
           ) {
           
 
@@ -55,7 +55,7 @@ import { FileInfo } from "../types/fileInfo.type";
           }
 
           const fileSize = fileInfo ? fileInfo.data?.length : 0;
-          if (fileSize && fileSize > UploadHandler.allowedSizeInBytes) {
+          if (fileSize && fileSize > UploadMiddleWare.allowedSizeInBytes) {
             next(new StatusError(400, "File size exceeds limit"));
 
             return;
@@ -79,4 +79,4 @@ import { FileInfo } from "../types/fileInfo.type";
   }
 }
 
-export default UploadHandler;
+export default UploadMiddleWare;

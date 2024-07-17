@@ -1,7 +1,7 @@
 
 import {v2 as cloudinary} from "cloudinary";
 
-
+// need to access this configs via the env file.
 cloudinary.config({
     cloud_name: "",
     api_key: "",

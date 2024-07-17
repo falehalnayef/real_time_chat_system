@@ -17,9 +17,11 @@ export class UserController {
     next: NextFunction
   ) {
     try {
-      const { userName, email, password } = req.body;
+      const { userName, email, password, bio } = req.body;
 
-      await this.userService.register(userName, email, password);
+      const files = req.files!;
+
+      await this.userService.register(userName, email, password, bio, files[0]);
 
       res.status(201).send(successResponse("User is registered."));
     } catch (error: any) {

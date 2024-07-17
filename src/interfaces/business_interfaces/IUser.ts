@@ -14,6 +14,6 @@ export interface IUser {
 
 export interface IUserRepository{
 
-  addUser(userName: string, email: string, password: string): Promise<void>;
+  addUser(userName: string, email: string, password: string, bio: string, photoPath: string): Promise<void>;
 }
 
