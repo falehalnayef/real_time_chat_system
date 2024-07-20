@@ -4,7 +4,6 @@ import { loginValidator, profileEditingValidator, registerValidator } from "../.
 import { UserService } from "../../services/business_services/user.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import { checkUser } from "../../middlewares/auth.middleware";
-import UploadHandler from "../../middlewares/upload.middleware";
 import UploadMiddleWare from "../../middlewares/upload.middleware";
 
 class UserRoute {
@@ -23,7 +22,7 @@ class UserRoute {
 
   private initRoutes() {
     this.router
-      .post("/", registerValidator, this.uploadMiddleware.handleFileUpload, this.userController.register)
+      .post("/", this.uploadMiddleware.handleFileUpload, registerValidator, this.userController.register)
       .bind(this.userController);
 
       this.router

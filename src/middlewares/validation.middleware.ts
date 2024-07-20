@@ -7,9 +7,10 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
 
     try {
 
-        const {userName, email, password} = req.body;
+        const {userName, email, password, bio} = req.body;
+        const files = req.files;
 
-        validateRequiredFields({userName, email, password});
+        validateRequiredFields({userName, email, password, bio, files});
 
         if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");

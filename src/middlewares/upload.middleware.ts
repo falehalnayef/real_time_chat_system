@@ -6,10 +6,7 @@ import { FileInfo } from "../types/fileInfo.type";
     class UploadMiddleWare {
   static allowedMimeTypes = [
     "image/png",
-    "image/jpeg",
-    "application/octet-stream",
-    "application/msword",
-    "application/pdf",
+    "image/jpeg"
   ];
   static allowedSizeInBytes = 10 * 1024 * 1024;
 

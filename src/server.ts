@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import connectToDB from "./database/connectToDB";
 dotenv.config();
 
-const PORT = env.PORT;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`running on port ${PORT}`);
