@@ -5,6 +5,8 @@ import { generateAccessToken } from "../utils_services/jwt.service";
 import { IUser } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
+import dotenv from "dotenv";
+dotenv.config();
 
 export class UserService{
     
