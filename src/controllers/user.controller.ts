@@ -81,10 +81,13 @@ export class UserController {
     try {
 
       const user = req.auth!.user;
-      const files = req.files!;
+      const files = req.files
 
       let updatedData = req.body;
-      updatedData.file = files[0]
+      
+      if(files){
+        updatedData.image = files[0];
+      }
 
       await this.userService.editProfile(user, updatedData);
 

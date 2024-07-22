@@ -55,8 +55,9 @@ export function profileEditingValidator(req: AuthenticatedRequest, _res: Respons
 
         const {userName, pohtoPath, bio} = req.body;
 
+        const image = req.files;
 
-        if(!userName && !pohtoPath && !bio) throw new StatusError(400, "Edit somthing.");
+        if(!userName && !pohtoPath && !bio && !image) throw new StatusError(400, "Edit somthing.");
 
         if(userName){
             if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");

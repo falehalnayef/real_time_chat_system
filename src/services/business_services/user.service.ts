@@ -5,7 +5,6 @@ import { generateAccessToken } from "../utils_services/jwt.service";
 import { IUser } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
-import { isValidUserName } from "../../validation/validator";
 
 export class UserService{
     
@@ -15,11 +14,11 @@ private userRepository: UserRepository;
 constructor(userRepository: UserRepository){
     this.userRepository = userRepository;
 }
-     async register(userName: string, email: string, password: string, bio: string, file: FileInfo) {
+     async register(userName: string, email: string, password: string, bio: string, image: FileInfo) {
 
         const hashedPassword = hashData(password);
 
-       const url = uploadToCloudinary(file.data!, "image", String(this.cloudinaryImageFolder));
+       const url = uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
 
         await this.userRepository.addUser(userName, email, await hashedPassword, bio, await url);
       }
@@ -41,15 +40,14 @@ constructor(userRepository: UserRepository){
 
         async editProfile(user: IUser, updatedData: any) {
 
-          const {userName, file, bio} = updatedData;
+          const {userName, image, bio} = updatedData;
 
           if(userName){         
-            if(!isValidUserName(userName)) throw new StatusError(400, "Invalid user name.");
             user.userName = userName;
           }
 
-          if(file){
-        const url = await uploadToCloudinary(file.data!, "image", String(this.cloudinaryImageFolder));         
+          if(image){
+        const url = await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));         
 
         const public_id = user.pohtoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
 
