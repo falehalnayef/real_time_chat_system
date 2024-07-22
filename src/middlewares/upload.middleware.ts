@@ -1,20 +1,22 @@
 import busboy from "busboy";
-import { Response, NextFunction, Request } from "express";
+import { Response, NextFunction } from "express";
 import AuthenticatedRequest from "../interfaces/utils_interfaces/IAuthenticatedRequest";
 import StatusError from "../utils/statusError";
 import { FileInfo } from "../types/fileInfo.type";
-    class UploadMiddleWare {
-  static allowedMimeTypes = [
-    "image/png",
-    "image/jpeg"
-  ];
-  static allowedSizeInBytes = 10 * 1024 * 1024;
+ 
 
-  handleFileUpload(
+export function uploadMiddleware(
     req: AuthenticatedRequest,
     _res: Response,
     next: NextFunction
   ) {
+
+    const allowedMimeTypes = [
+      "image/png",
+      "image/jpeg"
+    ];
+    const allowedSizeInBytes = 10 * 1024 * 1024;
+
     const bb = busboy({ headers: req.headers });
 
     const files: FileInfo[] = [];
@@ -27,7 +29,7 @@ import { FileInfo } from "../types/fileInfo.type";
         fieldName,
         fileName: info.filename,
         encoding: info.encoding,
-        mimetype: info.mimeType,
+        mimetype: info.mimeType,    
         data: Buffer.from([]),
       };
 
@@ -42,7 +44,7 @@ import { FileInfo } from "../types/fileInfo.type";
           fileInfo.data = buffer;
           if (
             fileInfo &&
-            !UploadMiddleWare.allowedMimeTypes.includes(fileInfo.mimetype)
+            !allowedMimeTypes.includes(fileInfo.mimetype)
           ) {
           
 
@@ -52,7 +54,7 @@ import { FileInfo } from "../types/fileInfo.type";
           }
 
           const fileSize = fileInfo ? fileInfo.data?.length : 0;
-          if (fileSize && fileSize > UploadMiddleWare.allowedSizeInBytes) {
+          if (fileSize && fileSize > allowedSizeInBytes) {
             next(new StatusError(400, "File size exceeds limit"));
 
             return;
@@ -74,6 +76,5 @@ import { FileInfo } from "../types/fileInfo.type";
     });
     req.pipe(bb);
   }
-}
 
-export default UploadMiddleWare;
+
