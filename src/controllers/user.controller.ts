@@ -81,9 +81,12 @@ export class UserController {
     try {
 
       const user = req.auth!.user;
+      const files = req.files!;
 
+      let updatedData = req.body;
+      updatedData.file = files[0]
 
-      await this.userService.editProfile(user, req.body);
+      await this.userService.editProfile(user, updatedData);
 
       res.status(200).send(successResponse("Profile has been edited."));
     } catch (error: any) {

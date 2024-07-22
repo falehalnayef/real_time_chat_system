@@ -4,10 +4,12 @@ import StatusError from "../../utils/statusError";
 import { generateAccessToken } from "../utils_services/jwt.service";
 import { IUser } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
-import { uploadToCloudinary } from "../utils_services/cloudinary.service";
+import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
+import { isValidUserName } from "../../validation/validator";
 
 export class UserService{
     
+private cloudinaryImageFolder: string = process.env.CLOUDINARY_USER_PROFILE_IMAGES_FOLDER!;
 private userRepository: UserRepository;
 
 constructor(userRepository: UserRepository){
@@ -17,7 +19,7 @@ constructor(userRepository: UserRepository){
 
         const hashedPassword = hashData(password);
 
-       const url = uploadToCloudinary(file.data!, "image", "userProfileImages");
+       const url = uploadToCloudinary(file.data!, "image", String(this.cloudinaryImageFolder));
 
         await this.userRepository.addUser(userName, email, await hashedPassword, bio, await url);
       }
@@ -36,21 +38,27 @@ constructor(userRepository: UserRepository){
 
         }
 
+
         async editProfile(user: IUser, updatedData: any) {
 
-          const {userName, pohtoPath, bio} = updatedData;
+          const {userName, file, bio} = updatedData;
 
-          if(userName){
-         
+          if(userName){         
+            if(!isValidUserName(userName)) throw new StatusError(400, "Invalid user name.");
             user.userName = userName;
-         
           }
 
-          if(pohtoPath){
-         // todo: upload image
-            user.pohtoPath = pohtoPath;
-         
+          if(file){
+        const url = await uploadToCloudinary(file.data!, "image", String(this.cloudinaryImageFolder));         
+
+        const public_id = user.pohtoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
+
+        await deleteFromCloudinary(public_id);
+
+           user.pohtoPath = url;
+        
           }
+
           if(bio){
          
             user.bio = bio;
