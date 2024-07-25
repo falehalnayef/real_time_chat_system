@@ -14,9 +14,11 @@ export class UserRepository implements IUserRepository {
     email: string,
     password: string,
     bio: string,
-    photoPath: string
+    photoPath: string,
+    otp: string,
+    otpExpiresIn: Date
   ): Promise<void> {
-    await this.userModel.model.create({ userName, email, password , bio, photoPath});
+    await this.userModel.model.create({ userName, email, password , bio, photoPath, otp, otpExpiresIn});
   }
 
   async getUserByEmail(
@@ -24,7 +26,7 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       email
-    }).select("_id name password");
+    }).select("_id name password isActive");
   }
 
   async getUserById(
@@ -32,8 +34,18 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
-    });
+    }).select("_id isActive");
   }
+
+  
+  async getUserByOTP(
+    otp: string
+  ): Promise<IUser | null> {
+    return await this.userModel.model.findOne({
+      otp
+    }).select("_id otp otpExpiresIn isActive");
+  }
+
 
   async updateUser(
     record: IUser

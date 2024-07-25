@@ -9,11 +9,14 @@ export class UserModel {
         userName: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        isActive: { type: Boolean, default: false},
         bio: { type: String },
         photoPath: { type: String },
         blockedUsers: [{ type: Schema.Types.ObjectId, ref: "User" }],
         contacts: [{ type: Schema.Types.ObjectId, ref: "User" }],
         groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
+        otp: { type: String, unique: true},
+        otpExpiresIn: { type: Date }, 
       });
 
       schema.index({ userName: 1 });

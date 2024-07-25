@@ -96,4 +96,21 @@ export class UserController {
       next(error);
     }
   }
-}
+
+  async verifyAccount(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      
+      const {otp} = req.body;
+
+      await this.userService.verifyAccount(otp);
+
+      res.status(200).send(successResponse("Account has been verified."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+} 
