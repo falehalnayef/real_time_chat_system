@@ -62,7 +62,7 @@ constructor(userRepository: IUserRepository){
           const checkPass = compareData(password, user.password);
           if(!(await checkPass)) throw new StatusError(401, "Invalid credentials.");
 
-          if(!user.isActive) throw new StatusError(401, "You must Activate your account.");
+          if(!user.isActive) throw new StatusError(401, "You must activate your account.");
           const accessToken = generateAccessToken(user._id);
 
           return {id: user._id, name: user.userName, accessToken};
@@ -99,5 +99,19 @@ constructor(userRepository: IUserRepository){
      
          }
       
+         async resetPassword(user: IUser, oldPassword: string, newPassword: string){
+
+
+          const checkPass = compareData(oldPassword, user.password);
+
+          if(!(await checkPass)) throw new StatusError(401, "Invalid credentials.");
+
+          const hashedPassword = hashData(newPassword);
+
+          user.password = await hashedPassword;
+
+          await this.userRepository.updateUser(user);
+
+         }
 
 } 

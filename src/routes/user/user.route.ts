@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../../controllers/user.controller";
-import { loginValidator, profileEditingValidator, registerValidator } from "../../middlewares/validation.middleware";
+import { loginValidator, profileEditingValidator, registerValidator, resetPasswordValidator } from "../../middlewares/validation.middleware";
 import { UserService } from "../../services/business_services/user.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import { checkUser } from "../../middlewares/auth.middleware";
@@ -37,6 +37,10 @@ class UserRoute {
 
       this.router
       .post("/profile", checkUser, profileEditingValidator,this.userController.editProfile)
+      .bind(this.userController);
+
+      this.router
+      .post("/reset-password", checkUser, resetPasswordValidator, this.userController.resetPassword)
       .bind(this.userController);
   }
   

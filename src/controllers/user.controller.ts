@@ -113,4 +113,23 @@ export class UserController {
       next(error);
     }
   }
+
+  async resetPassword(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const {oldPassword, newPassword} = req.body;
+
+      const user = req.auth!.user;
+
+      await this.userService.resetPassword(user, oldPassword, newPassword);
+
+      res.status(200).send(successResponse("Password has been reset."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

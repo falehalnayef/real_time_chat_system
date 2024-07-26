@@ -72,3 +72,23 @@ export function profileEditingValidator(req: AuthenticatedRequest, _res: Respons
     }
 
 }
+
+export function resetPasswordValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {oldPassword, newPassword} = req.body;
+
+        validateRequiredFields({oldPassword, newPassword});
+
+        if(!isValidPassword(oldPassword)) throw new StatusError(400, "Invalid old password format.");
+        if(!isValidPassword(newPassword)) throw new StatusError(400, "Invalid new password format.");
+
+        next()
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}

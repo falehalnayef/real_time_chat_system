@@ -25,7 +25,7 @@ export interface IUserRepository{
 
   getUserByOTP(otp: string): Promise<IUser | null>;
 
-  updateUser(record: IUser): Promise<void>;
+        updateUser(record: IUser): Promise<void>;
 }
 
 
