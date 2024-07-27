@@ -132,4 +132,38 @@ export class UserController {
       next(error);
     }
   }
+
+  async sendForgotPasswordToken(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const {email} = req.body;
+
+      await this.userService.sendForgotPasswordToken(email);
+
+      res.status(200).send(successResponse("Check your email for reset token."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+  
+  async forgotPassword(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const {resetToken, newPassword} = req.body;
+
+      await this.userService.resetForgottenPassword(resetToken, newPassword);
+
+      res.status(200).send(successResponse("Password has been reset."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

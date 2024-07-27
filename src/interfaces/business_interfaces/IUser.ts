@@ -13,6 +13,7 @@ export interface IUser {
   groups: ObjectId[];
   otp: string | undefined;
   otpExpiresIn: Date | undefined;
+  resetPasswordToken: string | undefined;
 }
 
 export interface IUserRepository{
@@ -25,7 +26,7 @@ export interface IUserRepository{
 
   getUserByOTP(otp: string): Promise<IUser | null>;
 
-        updateUser(record: IUser): Promise<void>;
+  updateUser(record: IUser): Promise<void>;
 }
 
 

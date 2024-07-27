@@ -92,3 +92,20 @@ export function resetPasswordValidator(req: AuthenticatedRequest, _res: Response
     }
 
 }
+
+export function forgotPasswordValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {resetToken, newPassword} = req.body;
+
+        validateRequiredFields({resetToken, newPassword});
+
+        if(!isValidPassword(newPassword)) throw new StatusError(400, "Invalid new password format.");
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}

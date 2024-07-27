@@ -17,6 +17,7 @@ export class UserModel {
         groups: [{ type: Schema.Types.ObjectId, ref: "Group" }],
         otp: { type: String, unique: true},
         otpExpiresIn: { type: Date }, 
+        resetPasswordToken: {type: String}
       });
 
       schema.index({ userName: 1 });

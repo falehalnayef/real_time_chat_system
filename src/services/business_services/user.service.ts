@@ -1,7 +1,7 @@
 import { compareData, hashData } from "../utils_services/bcrypt.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
-import { generateAccessToken } from "../utils_services/jwt.service";
+import { generateAccessToken, generateResetPasswordToken, verifyResetPasswordToken } from "../utils_services/jwt.service";
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
@@ -112,6 +112,44 @@ constructor(userRepository: IUserRepository){
 
           await this.userRepository.updateUser(user);
 
-         }
+         }      
+
+         async sendForgotPasswordToken(email: string) {
+
+          if(!email) throw new StatusError(400, "Email is required.");
+          const user = await this.userRepository.getUserByEmail(email);
+        
+          if (!user) throw new StatusError(404, "User not found.");
+        
+          const resetToken = generateResetPasswordToken(user._id);
+        
+          user.resetPasswordToken = resetToken;
+      
+          await this.userRepository.updateUser(user);
+        
+          await sendEmail(user.email, "Password Reset", `Your password reset token is: ${resetToken}`);
+        }
+
+        async resetForgottenPassword(resetToken: string, newPassword: string) {
+        
+        
+          const decoded = verifyResetPasswordToken(resetToken);
+        
+          const user = await this.userRepository.getUserById(decoded._id);
+        
+          if (!user || (user.resetPasswordToken !== resetToken)) throw new StatusError(400, "Invalid or expired reset token.");
+        
+          const hashedPassword = await hashData(newPassword);
+        
+          user.password = hashedPassword;
+          user.resetPasswordToken = undefined;
+        
+          await this.userRepository.updateUser(user);
+        }
+        
+            
+
+     
+
 
 } 
