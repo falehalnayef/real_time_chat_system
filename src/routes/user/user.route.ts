@@ -54,9 +54,11 @@ class UserRoute {
       this.router
       .post("/reset-forgotten-password", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
       .bind(this.userController);
-    
-    
-      }
+
+      this.router
+      .post("/rotate-tokens", checkUser, this.userController.generateNewTokens)
+      .bind(this.userController);
+  }
   
 }
 

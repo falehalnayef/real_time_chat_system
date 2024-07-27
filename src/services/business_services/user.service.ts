@@ -1,7 +1,7 @@
 import { compareData, hashData } from "../utils_services/bcrypt.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
-import { generateAccessToken, generateResetPasswordToken, verifyResetPasswordToken } from "../utils_services/jwt.service";
+import { generateAccessToken, generateRefreshToken, generateResetPasswordToken, verifyRefreshToken, verifyResetPasswordToken } from "../utils_services/jwt.service";
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
@@ -64,8 +64,10 @@ constructor(userRepository: IUserRepository){
 
           if(!user.isActive) throw new StatusError(401, "You must activate your account.");
           const accessToken = generateAccessToken(user._id);
+          const refreshToken = generateRefreshToken(user._id);
 
-          return {id: user._id, name: user.userName, accessToken};
+
+          return {id: user._id, name: user.userName, accessToken, refreshToken};
 
         }
 
@@ -147,6 +149,21 @@ constructor(userRepository: IUserRepository){
           await this.userRepository.updateUser(user);
         }
         
+        async generateNewTokens(oldRefreshToken: string){
+
+          if(!oldRefreshToken) throw new StatusError(400, "Refresh token is required.");
+
+          const decoded = verifyRefreshToken(oldRefreshToken);
+
+          const user = await this.userRepository.getUserById(decoded._id);
+
+          if(!user) throw new StatusError(404, "User not found.");
+
+          const accessToken = generateAccessToken(user._id);
+          const refreshToken = generateRefreshToken(user._id);
+
+          return {accessToken, refreshToken};
+        }
             
 
      

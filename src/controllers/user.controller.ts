@@ -166,4 +166,21 @@ export class UserController {
       next(error);
     }
   }
+
+  async generateNewTokens(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const {refreshToken} = req.body;
+
+      const tokens = this.userService.generateNewTokens(refreshToken);
+
+      res.status(200).send(successResponse("Tokens have been refreshed.", await tokens));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 
