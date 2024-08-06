@@ -40,23 +40,19 @@ class UserRoute {
       .bind(this.userController);
 
       this.router
-      .post("/reset-password", checkUser, resetPasswordValidator, this.userController.resetPassword)
+      .post("/password", checkUser, resetPasswordValidator, this.userController.resetPassword)
       .bind(this.userController);
 
       this.router
-      .post("/reset-password", checkUser, resetPasswordValidator, this.userController.resetPassword)
+      .post("/forgot-password-token", checkUser, this.userController.sendForgotPasswordToken)
       .bind(this.userController);
 
       this.router
-      .post("/send-forgot-password-token", checkUser, this.userController.sendForgotPasswordToken)
+      .post("/password/forgotten", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
       .bind(this.userController);
 
       this.router
-      .post("/reset-forgotten-password", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
-      .bind(this.userController);
-
-      this.router
-      .post("/rotate-tokens", checkUser, this.userController.generateNewTokens)
+      .post("/tokens", checkUser, this.userController.generateNewTokens)
       .bind(this.userController);
   }
   

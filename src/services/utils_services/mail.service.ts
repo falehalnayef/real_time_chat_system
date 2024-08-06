@@ -23,8 +23,7 @@ export async function sendEmail(to: string, subject: string, text: string): Prom
       text,
     });
   } catch (error) {
-    console.error("Failed to send email:", error);
-    throw new StatusError(500, "Failed to send email.");
+    console.error("Failed to send email");
   }
 
 }
