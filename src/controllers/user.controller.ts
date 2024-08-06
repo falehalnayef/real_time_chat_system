@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import IAuthenticatedRequest from "../interfaces/utils_interfaces/IAuthenticatedRequest";
 import { UserService } from "../services/business_services/user.service";
 import { successResponse } from "../utils/response";
+import { User } from "../dto/user.dto";
 
 export class UserController {
   private userService: UserService;
@@ -55,19 +56,9 @@ export class UserController {
     try {
 
       const user = req.auth!.user;
-    
-      const data = {
-        id: user._id,
-        name: user.userName,
-        email: user.email,
-        pohtoPath: user.pohtoPath,
-        bio: user.bio,
-        groups: user.groups,
-        contacts: user.contacts,
-        blockedUsers: user.blockedUsers,
-      };
+   
 
-      res.status(200).send(successResponse("Profile.", data));
+      res.status(200).send(successResponse("Profile.", new User(user)));
     } catch (error: any) {
       next(error);
     }
