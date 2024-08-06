@@ -14,7 +14,7 @@ export async function checkUser(req: AuthenticatedRequest, _res: Response, next:
 
         if(!token) throw new StatusError(400, "Token is required.");
 
-         const decoded = verifyToken(token!);
+         const decoded = verifyToken(token!, process.env.JWT_ACCESS_SECRET!);
         const user = await userRepository.getUserById(decoded._id);
         if(!user) throw new StatusError(403, "forbidden.");
         if(!user.isActive) throw new StatusError(401, "You must activate your account.");

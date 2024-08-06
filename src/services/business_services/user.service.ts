@@ -1,13 +1,13 @@
 import { compareData, hashData } from "../utils_services/bcrypt.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
-import { generateAccessToken, generateRefreshToken, generateResetPasswordToken, verifyRefreshToken, verifyResetPasswordToken } from "../utils_services/jwt.service";
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/cloudinary.service";
 import dotenv from "dotenv";
 import { sendEmail } from "../utils_services/mail.service";
 import { generateOTP } from "../utils_services/otp-generator.service";
+import { generateToken, verifyToken } from "../utils_services/jwt.service";
 dotenv.config();
 
 export class UserService{
@@ -63,8 +63,8 @@ constructor(userRepository: IUserRepository){
           if(!(await checkPass)) throw new StatusError(401, "Invalid credentials.");
 
           if(!user.isActive) throw new StatusError(401, "You must activate your account.");
-          const accessToken = generateAccessToken(user._id);
-          const refreshToken = generateRefreshToken(user._id);
+          const accessToken = generateToken(user._id, process.env.JWT_ACCESS_SECRET!, process.env.JWT_ACCESS_EXPIRATION_TIME!);
+          const refreshToken = generateToken(user._id, process.env.JWT_REFRESH_SECRET!, process.env.JWT_REFRESH_EXPIRATION_TIME!);
 
 
           return {id: user._id, name: user.userName, accessToken, refreshToken};
@@ -123,7 +123,7 @@ constructor(userRepository: IUserRepository){
         
           if (!user) throw new StatusError(404, "User not found.");
         
-          const resetToken = generateResetPasswordToken(user._id);
+          const resetToken = generateToken(user._id, process.env.JWT_RESETPASSWORD_SECRET!, process.env.JWT_RESETPASSWORD_EXPIRATION_TIME!);
         
           user.resetPasswordToken = resetToken;
       
@@ -135,7 +135,7 @@ constructor(userRepository: IUserRepository){
         async resetForgottenPassword(resetToken: string, newPassword: string) {
         
         
-          const decoded = verifyResetPasswordToken(resetToken);
+          const decoded = verifyToken(resetToken, process.env.JWT_RESETPASSWORD_SECRET!);
         
           const user = await this.userRepository.getUserById(decoded._id);
         
@@ -153,14 +153,14 @@ constructor(userRepository: IUserRepository){
 
           if(!oldRefreshToken) throw new StatusError(400, "Refresh token is required.");
 
-          const decoded = verifyRefreshToken(oldRefreshToken);
+          const decoded = verifyToken(oldRefreshToken, process.env.JWT_REFRESH_SECRET!);
 
           const user = await this.userRepository.getUserById(decoded._id);
 
           if(!user) throw new StatusError(404, "User not found.");
 
-          const accessToken = generateAccessToken(user._id);
-          const refreshToken = generateRefreshToken(user._id);
+          const accessToken = generateToken(user._id, process.env.JWT_ACCESS_SECRET!, process.env.JWT_ACCESS_EXPIRATION_TIME!);
+          const refreshToken = generateToken(user._id, process.env.JWT_REFRESH_SECRET!, process.env.JWT_REFRESH_EXPIRATION_TIME!);
 
           return {accessToken, refreshToken};
         }
