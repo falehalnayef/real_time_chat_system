@@ -5,28 +5,28 @@ import { jwtPayload } from "../../types/jwtPayload.type";
 dotenv.config();
 
 export function generateAccessToken(_id: ObjectId) {
-  return jwt.sign({ _id }, process.env.SECRET_ACCESS_KEY!, { expiresIn: process.env.EXPIRESINACESS! });
+  return jwt.sign({ _id }, process.env.JWT_ACCESS_SECRET!, { expiresIn: process.env.JWT_ACCESS_EXPIRATION_TIME! });
 }
 
 
 export function verifyToken(token: string): jwtPayload {
-  return jwt.verify(token, process.env.SECRET_ACCESS_TOKEN!) as jwtPayload;
+  return jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as jwtPayload;
 }
 
 export function generateRefreshToken(_id: ObjectId) {
-  return jwt.sign({ _id }, process.env.SECRET_REFRESH_KEY!, { expiresIn: process.env.EXPIRESINREFRESH! });
+  return jwt.sign({ _id }, process.env.JWT_REFRESH_SECRET!, { expiresIn: process.env.JWT_REFRESH_EXPIRATION_TIME! });
 }
 
 
 export function verifyRefreshToken(token: string): jwtPayload {
-  return jwt.verify(token, process.env.SECRET_REFRESH_TOKEN!) as jwtPayload;
+  return jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as jwtPayload;
 }
 
 
 export function generateResetPasswordToken(_id: ObjectId) {
-  return jwt.sign({ _id }, process.env.SECRET_RESETPASSWORD_KEY!, { expiresIn: process.env.EXPIRESINRESETPASSWORD! });
+  return jwt.sign({ _id }, process.env.JWT_RESETPASSWORD_SECRET!, { expiresIn: process.env.JWT_RESETPASSWORD_EXPIRATION_TIME! });
 }
 
 export function verifyResetPasswordToken(token: string): jwtPayload {
-  return jwt.verify(token, process.env.SECRET_RESETPASSWORD_KEY!) as jwtPayload;
+  return jwt.verify(token, process.env.JWT_RESETPASSWORD_SECRET!) as jwtPayload;
 }

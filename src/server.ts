@@ -1,4 +1,3 @@
-import { env } from "process";
 import app from "./app";
 import dotenv from "dotenv";
 import connectToDB from "./database/connectToDB";
