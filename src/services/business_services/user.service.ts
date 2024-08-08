@@ -180,6 +180,13 @@ constructor(userRepository: IUserRepository){
           user.contacts.push(friendId);
 
         }
+        async removeFriend(user: IUser, friendId: ObjectId){
+
+          const friend = await this.userRepository.getUserById(friendId);
+          if(!friend) throw new StatusError(404, "User not found.");
+          user.contacts = user.contacts.filter((id) => id !== friendId);
+        } 
+
 
      
 

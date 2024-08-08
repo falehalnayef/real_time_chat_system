@@ -198,4 +198,23 @@ export class UserController {
       next(error);
     }
   }
+
+  async removeFriend(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+
+      const {friendId} = req.body;
+
+      await this.userService.removeFriend(user, friendId);
+
+      res.status(200).send(successResponse("User has been removed from your contacts."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

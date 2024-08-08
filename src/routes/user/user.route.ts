@@ -57,7 +57,11 @@ class UserRoute {
 
       
       this.router
-      .post("/contacts", checkUser, this.userController.addFriend   )
+      .post("/contacts", checkUser, this.userController.addFriend)
+      .bind(this.userController);
+
+      this.router
+      .patch("/contacts", checkUser, this.userController.removeFriend)
       .bind(this.userController);
   }
   
