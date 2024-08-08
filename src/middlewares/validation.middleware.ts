@@ -97,7 +97,9 @@ export function forgotPasswordValidator(req: AuthenticatedRequest, _res: Respons
 
     try {
 
-        const {resetToken, newPassword} = req.body;
+        const {newPassword} = req.body;
+
+        const {resetToken} = req.params;
 
         validateRequiredFields({resetToken, newPassword});
 

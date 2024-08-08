@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 import { sendEmail } from "../utils_services/mail.service";
 import { generateOTP } from "../utils_services/otp-generator.service";
 import { generateToken, verifyToken } from "../utils_services/jwt.service";
+import { User } from "../../dto/user.dto";
+import { ObjectId } from "mongoose";
 dotenv.config();
 
 export class UserService{
@@ -71,6 +73,11 @@ constructor(userRepository: IUserRepository){
 
         }
 
+        async getProfile(userId: ObjectId){
+          const profile = await this.userRepository.getUserProfileById(userId);
+          if(!profile) throw new StatusError(404,"User profile not found.");
+          return profile;
+        }
 
         async editProfile(user: IUser, updatedData: any) {
 
@@ -165,6 +172,14 @@ constructor(userRepository: IUserRepository){
           return {accessToken, refreshToken};
         }
             
+
+        async addFriend(user: IUser, friendId: ObjectId){
+
+          const friend = await this.userRepository.getUserById(friendId);
+          if(!friend) throw new StatusError(404, "User not found.");
+          user.contacts.push(friendId);
+
+        }
 
      
 

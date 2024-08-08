@@ -24,6 +24,8 @@ export interface IUserRepository{
 
   getUserById(_id: ObjectId): Promise<IUser | null>;
 
+  getUserProfileById(_id: ObjectId): Promise<IUser | null>;
+
   getUserByOTP(otp: string): Promise<IUser | null>;
 
   updateUser(record: IUser): Promise<void>;

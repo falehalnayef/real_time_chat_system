@@ -58,7 +58,9 @@ export class UserController {
       const user = req.auth!.user;
    
 
-      res.status(200).send(successResponse("Profile.", new User(user)));
+      const profile = await this.userService.getProfile(user._id);
+
+      res.status(200).send(successResponse("Profile.", new User(profile)));
     } catch (error: any) {
       next(error);
     }
@@ -148,7 +150,10 @@ export class UserController {
   ) {
     try {
 
-      const {resetToken, newPassword} = req.body;
+      const {newPassword} = req.body;
+
+      const {resetToken} = req.params;
+
 
       await this.userService.resetForgottenPassword(resetToken, newPassword);
 
@@ -167,9 +172,28 @@ export class UserController {
 
       const {refreshToken} = req.body;
 
-      const tokens = this.userService.generateNewTokens(refreshToken);
+      const tokens = await this.userService.generateNewTokens(refreshToken);
 
       res.status(200).send(successResponse("Tokens have been refreshed.", await tokens));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async addFriend(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+
+      const {friendId} = req.body;
+
+       await this.userService.addFriend(user, friendId);
+
+      res.status(200).send(successResponse("User has been added to your contacts."));
     } catch (error: any) {
       next(error);
     }

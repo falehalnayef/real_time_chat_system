@@ -37,6 +37,14 @@ export class UserRepository implements IUserRepository {
     }).select("_id isActive");
   }
 
+
+  async getUserProfileById(
+    _id: ObjectId
+  ): Promise<IUser | null> {
+    return await this.userModel.model.findOne({
+      _id
+    }).select("_id name email pohtoPath bio groups contacts blockedUsers");
+  }
   
   async getUserByOTP(
     otp: string

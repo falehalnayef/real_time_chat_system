@@ -48,11 +48,16 @@ class UserRoute {
       .bind(this.userController);
 
       this.router
-      .post("/password/forgotten", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
+      .post("/password/forgotten/:resetToken", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
       .bind(this.userController);
 
       this.router
       .post("/tokens", checkUser, this.userController.generateNewTokens)
+      .bind(this.userController);
+
+      
+      this.router
+      .post("/contacts", checkUser, this.userController.addFriend   )
       .bind(this.userController);
   }
   
