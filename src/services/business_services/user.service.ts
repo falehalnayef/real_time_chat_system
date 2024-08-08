@@ -187,6 +187,14 @@ constructor(userRepository: IUserRepository){
           user.contacts = user.contacts.filter((id) => id !== friendId);
         } 
 
+        async blockUser(user: IUser, userId: ObjectId){
+
+          const userToBlock = await this.userRepository.getUserById(userId);
+          if(!userToBlock) throw new StatusError(404, "User not found.");
+          user.blockedUsers.push(userId);
+        }
+
+
 
      
 

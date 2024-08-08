@@ -217,4 +217,23 @@ export class UserController {
       next(error);
     }
   }
+
+  async blockUser(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+
+      const {userId} = req.body;
+
+      await this.userService.blockUser(user, userId);
+
+      res.status(200).send(successResponse("User has been blocked."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

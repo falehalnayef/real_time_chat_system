@@ -63,6 +63,10 @@ class UserRoute {
       this.router
       .patch("/contacts", checkUser, this.userController.removeFriend)
       .bind(this.userController);
+
+      this.router
+      .post("/block", checkUser, this.userController.blockUser)
+      .bind(this.userController);
   }
   
 }
