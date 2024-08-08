@@ -236,4 +236,23 @@ export class UserController {
       next(error);
     }
   }
+
+  async unblockUser(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const user = req.auth!.user;
+
+      const {userId} = req.body;
+
+      await this.userService.unblockUser(user, userId);
+
+      res.status(200).send(successResponse("User has been unblocked."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

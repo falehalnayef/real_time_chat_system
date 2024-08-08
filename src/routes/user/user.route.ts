@@ -67,6 +67,10 @@ class UserRoute {
       this.router
       .post("/block", checkUser, this.userController.blockUser)
       .bind(this.userController);
+
+      this.router
+      .patch("/block", checkUser, this.userController.unblockUser)
+      .bind(this.userController);
   }
   
 }

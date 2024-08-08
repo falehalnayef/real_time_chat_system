@@ -175,26 +175,44 @@ constructor(userRepository: IUserRepository){
 
         async addFriend(user: IUser, friendId: ObjectId){
 
+          if(!friendId) throw new StatusError(400, "UserId is required.");
           const friend = await this.userRepository.getUserById(friendId);
           if(!friend) throw new StatusError(404, "User not found.");
           user.contacts.push(friendId);
+          await this.userRepository.updateUser(user);
 
         }
         async removeFriend(user: IUser, friendId: ObjectId){
 
+          if(!friendId) throw new StatusError(400, "UserId is required.");
           const friend = await this.userRepository.getUserById(friendId);
           if(!friend) throw new StatusError(404, "User not found.");
           user.contacts = user.contacts.filter((id) => id !== friendId);
+          await this.userRepository.updateUser(user);
+
         } 
 
         async blockUser(user: IUser, userId: ObjectId){
 
+          if(!userId) throw new StatusError(400, "UserId is required.");
           const userToBlock = await this.userRepository.getUserById(userId);
           if(!userToBlock) throw new StatusError(404, "User not found.");
           user.blockedUsers.push(userId);
+          await this.userRepository.updateUser(user);
+
         }
 
 
+
+        async unblockUser(user: IUser, userId: ObjectId){
+
+          if(!userId) throw new StatusError(400, "UserId is required.");
+          const userToUnblock = await this.userRepository.getUserById(userId);
+          if(!userToUnblock) throw new StatusError(404, "User not found.");
+          user.blockedUsers = user.blockedUsers.filter((id) => id !== userId);
+          await this.userRepository.updateUser(user);
+
+        }
 
      
 
