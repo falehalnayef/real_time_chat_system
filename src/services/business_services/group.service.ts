@@ -116,4 +116,28 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
         await this.grouoRepository.updateGroup(group);
         await this.userRepository.updateUser(user);
     }   
+    
+    async leaveGroup(user: IUser, groupId: string){
+
+        if(!groupId) throw new StatusError(400, "groupId is required.");
+
+        const group = await this.grouoRepository.getGroupInfoById(groupId);
+        if(!group) throw new StatusError(404, "Group not found."); 
+    
+        const l1 = group.members.length;
+
+        group.members = group.members.filter((id) => id !== user._id);
+
+        const l2 = group.members.length;
+
+        if(l1 == l2) throw new StatusError(400, "User is not in the group."); 
+
+        group.membersCount -= 1;
+        user.groups = user.groups.filter((id) => id !== group._id);
+
+        await this.grouoRepository.updateGroup(group);
+        await this.userRepository.updateUser(user);
+
+    }
+
 } 

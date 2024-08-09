@@ -52,7 +52,7 @@ export class GroupController {
   }
 
 
-  async     addUserToGroup(
+  async addUserToGroup(
     req: IAuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -105,6 +105,26 @@ export class GroupController {
       await this.groupService.joinPublicGroup(user, groupId);
 
       res.status(200).send(successResponse("User has joined the group."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+
+  async leaveGroup(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      await this.groupService.leaveGroup(user, groupId);
+
+      res.status(200).send(successResponse("User has left the group."));
     } catch (error: any) {
       next(error);
     }
