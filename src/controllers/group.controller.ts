@@ -20,11 +20,11 @@ export class GroupController {
 
         const user = req.auth!.user;
 
-      const { groupName, bio } = req.body;
+      const { groupName, bio, isPrivate } = req.body;
 
       const files = req.files!;
 
-      await this.groupService.createGroup(user, groupName, bio, files[0]);
+      await this.groupService.createGroup(user, groupName, bio, isPrivate, files[0]);
 
       res.status(201).send(successResponse("Group has been created."));
     } catch (error: any) {
@@ -32,7 +32,7 @@ export class GroupController {
     }
   }
 
-  async removeGroup(
+  async removeGroup(    
     req: IAuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -52,7 +52,7 @@ export class GroupController {
   }
 
 
-  async addUserToGroup(
+  async     addUserToGroup(
     req: IAuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -61,12 +61,9 @@ export class GroupController {
 
         const user = req.auth!.user;
 
-      const { groupId } = req.params;
+      const { groupId, userId } = req.params;
 
-      const { userId } = req.body;
-
-
-      await this.groupService.addUserToGroup(user, groupId, userId);
+      await this.groupService.addUserToGroup(user, groupId, userId as unknown as ObjectId);
 
       res.status(200).send(successResponse("User has been added to the group."));
     } catch (error: any) {
@@ -87,7 +84,27 @@ export class GroupController {
 
       await this.groupService.removeUserFromGroup(user, groupId, userId as unknown as ObjectId);
 
-      res.status(200).send(successResponse("User has been added to the group."));
+      res.status(200).send(successResponse("User has been removed from the group."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+
+  async joinPublicGroup(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      await this.groupService.joinPublicGroup(user, groupId);
+
+      res.status(200).send(successResponse("User has joined the group."));
     } catch (error: any) {
       next(error);
     }

@@ -30,11 +30,15 @@ class GroupRoute {
 
 
       this.router   
-      .post("/:groupId/users", checkUser, this.groupController.addUserToGroup)
+      .post("/:groupId/users/:userId", checkUser, this.groupController.addUserToGroup)
       .bind(this.groupController);
 
       this.router   
       .delete("/:groupId/users/:userId", checkUser, this.groupController.removeUserFromGroup)
+      .bind(this.groupController);
+
+      this.router   
+      .post("/:groupId/users", checkUser, this.groupController.joinPublicGroup)
       .bind(this.groupController);
   }
 

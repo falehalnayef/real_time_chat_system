@@ -25,9 +25,10 @@ export class GroupRepository implements IGroupRepository {
     groupName: string,
     bio: string,
     photoPath: string,
-    createdBy: ObjectId
+    createdBy: ObjectId,
+    isPrivate: boolean
   ): Promise<any> {
-    return await this.groupModel.model.create({ groupName, bio, photoPath, createdBy});
+    return await this.groupModel.model.create({ groupName, bio, photoPath, createdBy, isPrivate});
   }
 
   async getGroupById(

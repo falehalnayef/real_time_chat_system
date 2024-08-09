@@ -19,11 +19,11 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
     this.grouoRepository = grouoRepository;
     this.userRepository = userRepository;
 }
-     async createGroup(user: IUser, groupName: string, bio: string, image: FileInfo) {
+     async createGroup(user: IUser, groupName: string, bio: string, isPrivate: boolean, image: FileInfo) {
 
         const url = uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
 
-       const group = await this.grouoRepository.addGroup(groupName, bio, await url, user._id);
+       const group = await this.grouoRepository.addGroup(groupName, bio, await url, user._id, isPrivate);
 
        group.members.push(user._id);
        group.membersCount += 1;
@@ -98,4 +98,22 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
         await this.userRepository.updateUser(userToRemove);
 
     }
+
+
+    async joinPublicGroup(user: IUser, groupId: string){
+
+        if(!groupId) throw new StatusError(400, "groupId is required.");
+
+        const group = await this.grouoRepository.getGroupInfoById(groupId);
+        if(!group) throw new StatusError(404, "Group not found."); 
+    
+        if(group.isPrivate) throw new StatusError(403, "This group is private.");
+    
+        group.members.push(user._id);
+        group.membersCount += 1;
+        user.groups.push(group._id);
+
+        await this.grouoRepository.updateGroup(group);
+        await this.userRepository.updateUser(user);
+    }   
 } 
