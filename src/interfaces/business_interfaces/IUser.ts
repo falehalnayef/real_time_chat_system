@@ -6,7 +6,7 @@ export interface IUser {
   email: string;
   password: string;
   isActive: boolean;
-  pohtoPath: string;
+  photoPath: string;
   bio: string;
   contacts: ObjectId[];
   blockedUsers: ObjectId[];

@@ -30,4 +30,23 @@ export class GroupController {
       next(error);
     }
   }
+
+  async removeGroup(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      await this.groupService.removeGroup(user, groupId);
+
+      res.status(201).send(successResponse("Group has been deleted."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

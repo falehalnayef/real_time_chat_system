@@ -1,5 +1,4 @@
 import { compareData, hashData } from "../utils_services/bcrypt.service";
-import { UserRepository } from "../../database/repositories/user.repository";
 import StatusError from "../../utils/statusError";
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import { FileInfo } from "../../types/fileInfo.type";
@@ -90,11 +89,11 @@ constructor(userRepository: IUserRepository){
           if(image){
         const url = await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));         
 
-        const public_id = user.pohtoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
+        const public_id = user.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
 
         await deleteFromCloudinary(public_id);
 
-           user.pohtoPath = url;
+           user.photoPath      = url;
         
           }
 

@@ -13,7 +13,7 @@ export class User {
             id: this.user._id,
             name: this.user.userName,
             email: this.user.email,
-            pohtoPath: this.user.pohtoPath,
+            photoPath: this.user.photoPath,
             bio: this.user.bio,
             groups: this.user.groups,
             contacts: this.user.contacts,

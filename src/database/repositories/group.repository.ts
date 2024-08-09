@@ -9,6 +9,11 @@ export class GroupRepository implements IGroupRepository {
         this.groupModel = new GroupModel();
     }
 
+
+ async deleteGroup( _id: string): Promise<void> {
+    await this.groupModel.model.deleteOne({_id});
+  }
+
  
 
   async addGroup(
@@ -21,13 +26,22 @@ export class GroupRepository implements IGroupRepository {
   }
 
   async getGroupById(
-    _id: ObjectId
+    _id: string
   ): Promise<any> {
     return await this.groupModel.model.findOne({
       _id
     }).select("_id groupName isPrivate");
   }
 
+
+  async getGroupInfoById(
+    _id: string
+  ): Promise<any> {
+    return await this.groupModel.model.findOne({
+      _id
+    });
+  }
+  
   async updateGroup(
     record: IGroup
   ): Promise<void> {

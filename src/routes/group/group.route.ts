@@ -22,7 +22,13 @@ class GroupRoute {
     this.router   
       .post("/", checkUser, uploadMiddleware, groupCreationValidator, this.groupController.createGroup)
       .bind(this.groupController);
+
+      this.router   
+      .delete   ("/:groupId", checkUser, this.groupController.removeGroup)
+      .bind(this.groupController);
   }
+
+  
   
 }
 

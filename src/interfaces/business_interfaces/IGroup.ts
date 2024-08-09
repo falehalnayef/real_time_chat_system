@@ -16,7 +16,12 @@ export interface IGroupRepository{
 
   addGroup(groupName: string, bio: string, photoPath: string, createdBy: ObjectId): Promise<void>;
 
-  getGroupById(_id: ObjectId): Promise<IGroup | null>;
+  getGroupById(_id: string): Promise<IGroup | null>;
+
+  getGroupInfoById(_id: string): Promise<IGroup | null>;
 
   updateGroup(record: IGroup): Promise<void>;
+
+  deleteGroup( _id: string): Promise<void>;
+
 }
