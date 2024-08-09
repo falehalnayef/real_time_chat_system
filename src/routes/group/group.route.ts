@@ -44,6 +44,10 @@ class GroupRoute {
       this.router   
       .delete("/:groupId/users", checkUser, this.groupController.leaveGroup)
       .bind(this.groupController);
+
+      this.router   
+      .get("/:groupId", checkUser, this.groupController.getGroupInfo)
+      .bind(this.groupController);
   }
 
   

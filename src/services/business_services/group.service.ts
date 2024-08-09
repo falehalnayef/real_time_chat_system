@@ -25,11 +25,15 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
 
        const group = await this.grouoRepository.addGroup(groupName, bio, await url, user._id, isPrivate);
 
-       group.members.push(user._id);
-       group.membersCount += 1;
-       user.groups.push(group._id);
 
-       await this.userRepository.updateUser(user);
+       const userToAdd = await this.userRepository.getUserProfileById(user._id);
+       if(!userToAdd) throw new StatusError(404,"User not found.");
+
+       group.members.push(userToAdd._id);
+       group.membersCount += 1;
+       userToAdd.groups.push(group._id);
+
+       await this.userRepository.updateUser(userToAdd);
        await this.grouoRepository.updateGroup(group);
 
       }
@@ -65,7 +69,7 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
     
         if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
 
-        const userToAdd = await this.userRepository.getUserById(userId);
+        const userToAdd = await this.userRepository.getUserProfileById(userId);
         if(!userToAdd) throw new StatusError(404,"User not found.");
     
         group.members.push(userToAdd._id);
@@ -86,7 +90,7 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
     
         if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
 
-        const userToRemove = await this.userRepository.getUserById(userId);
+        const userToRemove = await this.userRepository.getUserProfileById(userId);
         if(!userToRemove) throw new StatusError(404,"User not found.");
     
 
@@ -109,14 +113,20 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
     
         if(group.isPrivate) throw new StatusError(403, "This group is private.");
     
-        group.members.push(user._id);
+
+
+        const userToAdd = await this.userRepository.getUserProfileById(user._id);
+        if(!userToAdd) throw new StatusError(404,"User not found.");
+
+
+        group.members.push(userToAdd._id);
         group.membersCount += 1;
-        user.groups.push(group._id);
+        userToAdd.groups.push(group._id);
 
         await this.grouoRepository.updateGroup(group);
-        await this.userRepository.updateUser(user);
+        await this.userRepository.updateUser(userToAdd);
     }   
-    
+
     async leaveGroup(user: IUser, groupId: string){
 
         if(!groupId) throw new StatusError(400, "groupId is required.");
@@ -133,11 +143,31 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
         if(l1 == l2) throw new StatusError(400, "User is not in the group."); 
 
         group.membersCount -= 1;
-        user.groups = user.groups.filter((id) => id !== group._id);
+
+        const userToRemove = await this.userRepository.getUserProfileById(user._id);
+        if(!userToRemove) throw new StatusError(404,"User not found.");
+
+        userToRemove.groups = userToRemove.groups.filter((id) => id !== group._id);
 
         await this.grouoRepository.updateGroup(group);
-        await this.userRepository.updateUser(user);
+        await this.userRepository.updateUser(userToRemove);
 
     }
 
+    async getGroupInfo(user: IUser, groupId: string){
+
+        const userInfo = await this.userRepository.getUserProfileById(user._id);
+        if(!userInfo) throw new StatusError(404,"User not found.");
+ 
+        if(!groupId) throw new StatusError(400, "groupId is required.");
+
+        const group = await this.grouoRepository.getGroupInfoById(groupId);
+        if(!group) throw new StatusError(404, "Group not found.");
+
+        const check = userInfo.groups.filter((id)=> id == group._id);
+
+        if(!check) throw new StatusError(403, "You are not in the group");
+
+        return group;
+    }
 } 

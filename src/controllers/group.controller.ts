@@ -129,4 +129,24 @@ export class GroupController {
       next(error);
     }
   }
+
+
+  async getGroupInfo(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      await this.groupService.getGroupInfo(user, groupId);
+
+      res.status(200).send(successResponse("Group info."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 
