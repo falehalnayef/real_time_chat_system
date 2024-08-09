@@ -10,6 +10,11 @@ export class GroupRepository implements IGroupRepository {
     }
 
 
+ async getGroups(where:object): Promise<IGroup[]> {
+    return await this.groupModel.model.find(where);
+  }
+
+
  async deleteGroup( _id: string): Promise<void> {
     await this.groupModel.model.deleteOne({_id});
   }
@@ -21,8 +26,8 @@ export class GroupRepository implements IGroupRepository {
     bio: string,
     photoPath: string,
     createdBy: ObjectId
-  ): Promise<void> {
-    await this.groupModel.model.create({ groupName, bio, photoPath, createdBy});
+  ): Promise<any> {
+    return await this.groupModel.model.create({ groupName, bio, photoPath, createdBy});
   }
 
   async getGroupById(

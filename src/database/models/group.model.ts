@@ -12,7 +12,7 @@ export class GroupModel {
       date: { type: Date, required: true, default: new Date() },
       createdBy: { type: Schema.Types.ObjectId, ref: "User" }, 
       members: [{ type: Schema.Types.ObjectId, ref: "User" }], 
-      membersCount: {type: Number, required: true}
+      membersCount: {type: Number, required: true, default: 0}
     });
     schema.index({ groupName: 1 });
     schema.index({ members: 1 });

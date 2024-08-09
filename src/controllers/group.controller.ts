@@ -44,7 +44,30 @@ export class GroupController {
 
       await this.groupService.removeGroup(user, groupId);
 
-      res.status(201).send(successResponse("Group has been deleted."));
+      res.status(200).send(successResponse("Group has been deleted."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+
+  async addUserToGroup(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      const { userId } = req.body;
+
+
+      await this.groupService.addUserToGroup(user, groupId, userId);
+
+      res.status(200).send(successResponse("User has been added to the group."));
     } catch (error: any) {
       next(error);
     }

@@ -5,6 +5,7 @@ import { GroupController } from "../../controllers/group.controller";
 import { GroupService } from "../../services/business_services/group.service";
 import { GroupRepository } from "../../database/repositories/group.repository";
 import { groupCreationValidator } from "../../middlewares/validation.middleware";
+import { UserRepository } from "../../database/repositories/user.repository";
 
 class GroupRoute {
   router: Router;
@@ -12,7 +13,7 @@ class GroupRoute {
   constructor() {
     this.router = Router();
     this.groupController = new GroupController(
-      new GroupService(new GroupRepository())
+      new GroupService(new GroupRepository(), new UserRepository())
     );
 
     this.initRoutes();
@@ -24,7 +25,12 @@ class GroupRoute {
       .bind(this.groupController);
 
       this.router   
-      .delete   ("/:groupId", checkUser, this.groupController.removeGroup)
+      .delete("/:groupId", checkUser, this.groupController.removeGroup)
+      .bind(this.groupController);
+
+
+      this.router   
+      .post("/:groupId", checkUser, this.groupController.addUserToGroup)
       .bind(this.groupController);
   }
 

@@ -1,6 +1,7 @@
 import { ObjectId } from "mongoose";
 
 export interface IGroup {
+  _id: ObjectId;
   groupName: string;
   members: ObjectId[];
   membersCount: number
@@ -14,7 +15,7 @@ export interface IGroup {
 
 export interface IGroupRepository{
 
-  addGroup(groupName: string, bio: string, photoPath: string, createdBy: ObjectId): Promise<void>;
+  addGroup(groupName: string, bio: string, photoPath: string, createdBy: ObjectId): Promise<IGroup>;
 
   getGroupById(_id: string): Promise<IGroup | null>;
 
@@ -23,5 +24,7 @@ export interface IGroupRepository{
   updateGroup(record: IGroup): Promise<void>;
 
   deleteGroup( _id: string): Promise<void>;
+
+  getGroups(where:object): Promise<IGroup[]>;
 
 }
