@@ -76,4 +76,26 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
         await this.userRepository.updateUser(userToAdd);
 
     }
+
+    async removeUserFromGroup(user: IUser, groupId: string, userId: ObjectId){
+
+        if(!groupId || !userId) throw new StatusError(400, "groupId and userId are required.");
+
+        const group = await this.grouoRepository.getGroupInfoById(groupId);
+        if(!group) throw new StatusError(404, "Group not found."); 
+    
+        if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
+
+        const userToRemove = await this.userRepository.getUserById(userId);
+        if(!userToRemove) throw new StatusError(404,"User not found.");
+    
+
+        group.members = group.members.filter((id) => id !== userId);
+        group.membersCount -= 1;
+        userToRemove.groups = userToRemove.groups.filter((id) => id !== group._id);
+
+        await this.grouoRepository.updateGroup(group);
+        await this.userRepository.updateUser(userToRemove);
+
+    }
 } 

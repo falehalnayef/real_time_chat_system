@@ -2,6 +2,7 @@ import { NextFunction, Response } from "express";
 import IAuthenticatedRequest from "../interfaces/utils_interfaces/IAuthenticatedRequest";
 import { successResponse } from "../utils/response";
 import { GroupService } from "../services/business_services/group.service";
+import { ObjectId } from "mongoose";
 
 export class GroupController {
   private groupService: GroupService;
@@ -66,6 +67,25 @@ export class GroupController {
 
 
       await this.groupService.addUserToGroup(user, groupId, userId);
+
+      res.status(200).send(successResponse("User has been added to the group."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async removeUserFromGroup(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { groupId,userId } = req.params;
+
+      await this.groupService.removeUserFromGroup(user, groupId, userId as unknown as ObjectId);
 
       res.status(200).send(successResponse("User has been added to the group."));
     } catch (error: any) {

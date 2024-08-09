@@ -30,12 +30,16 @@ class GroupRoute {
 
 
       this.router   
-      .post("/:groupId", checkUser, this.groupController.addUserToGroup)
+      .post("/:groupId/users", checkUser, this.groupController.addUserToGroup)
+      .bind(this.groupController);
+
+      this.router   
+      .delete("/:groupId/users/:userId", checkUser, this.groupController.removeUserFromGroup)
       .bind(this.groupController);
   }
 
   
-  
+    
 }
 
 export default new GroupRoute().router;
