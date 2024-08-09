@@ -4,7 +4,7 @@ import { uploadMiddleware } from "../../middlewares/upload.middleware";
 import { GroupController } from "../../controllers/group.controller";
 import { GroupService } from "../../services/business_services/group.service";
 import { GroupRepository } from "../../database/repositories/group.repository";
-import { groupCreationValidator } from "../../middlewares/validation.middleware";
+import { groupCreationValidator, groupInfoEditingValidator } from "../../middlewares/validation.middleware";
 import { UserRepository } from "../../database/repositories/user.repository";
 
 class GroupRoute {
@@ -47,6 +47,11 @@ class GroupRoute {
 
       this.router   
       .get("/:groupId", checkUser, this.groupController.getGroupInfo)
+      .bind(this.groupController);
+
+
+      this.router   
+      .put("/:groupId", checkUser, uploadMiddleware, groupInfoEditingValidator, this.groupController.editGroupInfo)
       .bind(this.groupController);
   }
 

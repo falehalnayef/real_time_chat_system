@@ -156,11 +156,11 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
 
     async getGroupInfo(user: IUser, groupId: string){
 
+        if(!groupId) throw new StatusError(400, "groupId is required.");
+
         const userInfo = await this.userRepository.getUserProfileById(user._id);
         if(!userInfo) throw new StatusError(404,"User not found.");
  
-        if(!groupId) throw new StatusError(400, "groupId is required.");
-
         const group = await this.grouoRepository.getGroupInfoById(groupId);
         if(!group) throw new StatusError(404, "Group not found.");
 
@@ -169,5 +169,43 @@ constructor(grouoRepository: IGroupRepository, userRepository: IUserRepository){
         if(!check) throw new StatusError(403, "You are not in the group");
 
         return group;
+    }
+
+
+    async editGroupInfo(user: IUser, groupId: string, updatedData: any){
+
+        const {groupName, image, bio, isPrivate} = updatedData;
+
+        const group = await this.grouoRepository.getGroupInfoById(groupId);
+        if(!group) throw new StatusError(404, "Group not found.");
+
+        if(group.createdBy != user._id) throw new StatusError(403, "unauthorized");
+
+        if(groupName){         
+            group.groupName = groupName;
+          }
+
+          if(image){
+        const url = await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));         
+
+        const public_id = group.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
+
+        await deleteFromCloudinary(public_id);
+
+        group.photoPath = url;
+        
+          }
+          if(bio){
+         
+            group.bio = bio;
+          }
+
+          if(isPrivate != undefined){
+            group.isPrivate = isPrivate;
+          }
+
+    
+          await this.grouoRepository.updateGroup(group);
+
     }
 } 

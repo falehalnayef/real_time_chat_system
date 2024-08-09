@@ -36,7 +36,7 @@ class UserRoute {
       .bind(this.userController);
 
       this.router
-      .post("/profile", checkUser, profileEditingValidator,this.userController.editProfile)
+      .put("/profile", checkUser, uploadMiddleware, profileEditingValidator,this.userController.editProfile)
       .bind(this.userController);
 
       this.router

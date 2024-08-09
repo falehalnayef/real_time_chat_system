@@ -142,9 +142,37 @@ export class GroupController {
 
       const { groupId } = req.params;
 
-      await this.groupService.getGroupInfo(user, groupId);
+     const group = this.groupService.getGroupInfo(user, groupId);
 
-      res.status(200).send(successResponse("Group info."));
+      res.status(200).send(successResponse("Group info.", await group));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+  async editGroupInfo(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+    const user = req.auth!.user;
+
+      const { groupId } = req.params;
+
+      const files = req.files
+
+      let updatedData = req.body;
+      
+      if(files){
+        updatedData.image = files[0];
+      }
+
+
+     await this.groupService.editGroupInfo(user, groupId, updatedData);
+
+      res.status(200).send(successResponse("Group info has been edited."));
     } catch (error: any) {
       next(error);
     }

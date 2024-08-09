@@ -132,3 +132,30 @@ export function groupCreationValidator(req: AuthenticatedRequest, _res: Response
     }
 
 }
+
+
+export function groupInfoEditingValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {groupName, pohtoPath, bio, isPrivate} = req.body;
+
+        const {groupId} = req.params;
+
+        const image = req.files;
+
+        if(!groupId && !groupName && !pohtoPath && !bio && !image && (isPrivate == undefined)) throw new StatusError(400, "Edit somthing.");
+
+        if(groupName){
+            if(!isValidName(groupName)) throw new StatusError(400, "Invalid groupName format.");
+        }
+     
+        next()
+
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}
