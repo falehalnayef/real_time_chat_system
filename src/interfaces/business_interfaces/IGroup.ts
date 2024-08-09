@@ -1,4 +1,4 @@
-import { Document, Model, ObjectId } from "mongoose";
+import { ObjectId } from "mongoose";
 
 export interface IGroup {
   groupName: string;
@@ -12,6 +12,11 @@ export interface IGroup {
 
 }
 
-export interface IGroupDocument extends IGroup, Document {}
+export interface IGroupRepository{
 
-export interface IGroupModel extends Model<IGroupDocument> {}
+  addGroup(groupName: string, bio: string, photoPath: string, createdBy: ObjectId): Promise<void>;
+
+  getGroupById(_id: ObjectId): Promise<IGroup | null>;
+
+  updateGroup(record: IGroup): Promise<void>;
+}

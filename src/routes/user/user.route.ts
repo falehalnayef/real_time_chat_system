@@ -52,7 +52,7 @@ class UserRoute {
       .bind(this.userController);
 
       this.router
-      .post("/tokens", checkUser, this.userController.generateNewTokens)
+      .post("/tokens", this.userController.generateNewTokens)
       .bind(this.userController);
 
       

@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import AuthenticatedRequest from "../interfaces/utils_interfaces/IAuthenticatedRequest";
-import { isValidEmail, isValidPassword, isValidUserName, validateRequiredFields } from "../validation/validator";
+import { isValidEmail, isValidName, isValidPassword, validateRequiredFields } from "../validation/validator";
 import StatusError from "../utils/statusError";
 
 export function registerValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
@@ -12,7 +12,7 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
 
         validateRequiredFields({userName, email, password, bio, files});
 
-        if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");
+        if(!isValidName(userName)) throw new StatusError(400, "Invalid userName format.");
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
         if(!isValidPassword(password)) throw new StatusError(400, "Invalid password format.");
 
@@ -60,7 +60,7 @@ export function profileEditingValidator(req: AuthenticatedRequest, _res: Respons
         if(!userName && !pohtoPath && !bio && !image) throw new StatusError(400, "Edit somthing.");
 
         if(userName){
-            if(!isValidUserName(userName)) throw new StatusError(400, "Invalid userName format.");
+            if(!isValidName(userName)) throw new StatusError(400, "Invalid userName format.");
         }
      
         next()
@@ -104,6 +104,27 @@ export function forgotPasswordValidator(req: AuthenticatedRequest, _res: Respons
         validateRequiredFields({resetToken, newPassword});
 
         if(!isValidPassword(newPassword)) throw new StatusError(400, "Invalid new password format.");
+
+    } catch (error: any) {
+        
+        next(error);
+    }
+
+}
+
+export function groupCreationValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+        const {groupName, bio} = req.body;
+        const files = req.files;
+
+        validateRequiredFields({groupName, bio, files});
+
+        if(!isValidName(groupName)) throw new StatusError(400, "Invalid groupName format.");
+
+        next()
+        
 
     } catch (error: any) {
         

@@ -8,7 +8,7 @@ export function validateRequiredFields(fields: Record<string, any>): void {
     }
 }
 
-export function isValidUserName(userName: string): boolean {
+export function isValidName(userName: string): boolean {
     
     const regex = /^[a-zA-Z0-9_-]+$/;
     return regex.test(userName);

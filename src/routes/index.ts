@@ -1,5 +1,6 @@
 import { Router } from "express";
 import userRoutes from "./user/user.route";
+import groupRoutes from "./group/group.route";
 
 class IndexRouter {
   router: Router;
@@ -11,7 +12,9 @@ class IndexRouter {
   }
   initRoutes() {
     this.router.use("/users", userRoutes);
+    this.router.use("/groups", groupRoutes);
+
   }
-}
+} 
 
 export default new IndexRouter().router;
