@@ -7,10 +7,9 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
 
     try {
 
-        const {userName, email, password, bio} = req.body;
-        const files = req.files;
+        const {userName, email, password} = req.body;
 
-        validateRequiredFields({userName, email, password, bio, files});
+        validateRequiredFields({userName, email, password});
 
         if(!isValidName(userName)) throw new StatusError(400, "Invalid userName format.");
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
@@ -116,10 +115,9 @@ export function groupCreationValidator(req: AuthenticatedRequest, _res: Response
 
     try {
 
-        const {groupName, bio} = req.body;
-        const files = req.files;
+        const {groupName} = req.body;
 
-        validateRequiredFields({groupName, bio, files});
+        validateRequiredFields({groupName});
 
         if(!isValidName(groupName)) throw new StatusError(400, "Invalid groupName format.");
 

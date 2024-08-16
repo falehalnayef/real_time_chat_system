@@ -23,10 +23,10 @@ export class GroupRepository implements IGroupRepository {
 
   async addGroup(
     groupName: string,
-    bio: string,
-    photoPath: string,
     createdBy: ObjectId,
-    isPrivate: boolean
+    isPrivate: boolean,
+    bio?: string,
+    photoPath?: string,
   ): Promise<any> {
     return await this.groupModel.model.create({ groupName, bio, photoPath, createdBy, isPrivate});
   }

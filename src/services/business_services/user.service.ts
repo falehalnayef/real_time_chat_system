@@ -23,11 +23,13 @@ constructor(userRepository: IUserRepository){
 
         const hashedPassword = hashData(password);
 
-        const url = uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
-
+        let url: string | undefined;
+        if(image){
+         url =  await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
+        }
         const otpObject = generateOTP();
 
-        await this.userRepository.addUser(userName, email, await hashedPassword, bio, await url, otpObject.code, otpObject.otpExpiresIn);
+        await this.userRepository.addUser(userName, email, await hashedPassword, otpObject.code, otpObject.otpExpiresIn, bio, url);
 
         sendEmail(email, "Account verification.", `OTP to verify your account is: ${otpObject.code} \n it expires in 5 minutes`);
 
@@ -88,10 +90,12 @@ constructor(userRepository: IUserRepository){
           if(image){
         const url = await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));         
 
-        const public_id = user.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
+        if(user.photoPath){
+          const public_id = user.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
 
-        await deleteFromCloudinary(public_id);
-
+          await deleteFromCloudinary(public_id);
+        }
+       
            user.photoPath = url;
         
           }

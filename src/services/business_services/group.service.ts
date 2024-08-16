@@ -7,7 +7,6 @@ import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUs
 import StatusError from "../../utils/statusError";
 import { ObjectId } from "mongoose";
 import { GroupTypes } from "../../enums/groupTypes.enum";
-import { group } from "console";
 
 dotenv.config();
 
@@ -23,9 +22,13 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
 }
      async createGroup(user: IUser, groupName: string, bio: string, isPrivate: boolean, image: FileInfo) {
 
-        const url = uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
 
-       const group = await this.groupRepository.addGroup(groupName, bio, await url, user._id, isPrivate);
+        let url: string | undefined;
+        if(image){
+           url = await uploadToCloudinary(image.data!, "image", String(this.cloudinaryImageFolder));
+        }
+
+       const group = await this.groupRepository.addGroup(groupName, user._id, isPrivate, bio, url);
 
 
        const userToAdd = await this.userRepository.getUserProfileById(user._id);

@@ -15,7 +15,7 @@ export interface IGroup {
 
 export interface IGroupRepository{
 
-  addGroup(groupName: string, bio: string, photoPath: string, createdBy: ObjectId, isPrivate: boolean): Promise<IGroup>;
+  addGroup(groupName: string, createdBy: ObjectId, isPrivate: boolean, bio?: string, photoPath?: string): Promise<IGroup>;
 
   getGroupById(_id: string): Promise<IGroup | null>;
 

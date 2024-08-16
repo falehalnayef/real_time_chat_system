@@ -13,10 +13,10 @@ export class UserRepository implements IUserRepository {
     userName: string,
     email: string,
     password: string,
-    bio: string,
-    photoPath: string,
     otp: string,
-    otpExpiresIn: Date
+    otpExpiresIn: Date,
+    bio?: string,
+    photoPath?: string,
   ): Promise<void> {
     await this.userModel.model.create({ userName, email, password , bio, photoPath, otp, otpExpiresIn});
   }

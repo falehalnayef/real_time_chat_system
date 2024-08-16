@@ -7,8 +7,8 @@ export class GroupModel {
     const schema = new Schema({
       groupName: { type: String, required: true },
       isPrivate: { type: Boolean, required: true, default: true },
-      bio: { type: String, required: true },
-      photoPath: { type: String, required: true }, 
+      bio: { type: String, default: null },
+      photoPath: { type: String, default: null }, 
       date: { type: Date, required: true, default: new Date() },
       createdBy: { type: Schema.Types.ObjectId, ref: "User" }, 
       members: [{ type: Schema.Types.ObjectId, ref: "User" }], 
