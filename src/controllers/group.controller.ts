@@ -197,6 +197,21 @@ export class GroupController {
       next(error);
     }
   }
+  async searchForPublicGroups(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const { groupName } = req.query;
+
+      const groups = this.groupService.searchForPublicGroups(groupName as string);
+
+      res.status(200).send(successResponse("Groups.", await groups));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 
 } 
-  

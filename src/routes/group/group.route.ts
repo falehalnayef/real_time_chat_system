@@ -57,6 +57,10 @@ class GroupRoute {
       this.router   
       .put("/:groupId", checkUser, uploadMiddleware, groupInfoEditingValidator, this.groupController.editGroupInfo)
       .bind(this.groupController);
+
+      this.router   
+      .get("/search", checkUser, this.groupController.searchForPublicGroups)
+      .bind(this.groupController);  
   }
 
   

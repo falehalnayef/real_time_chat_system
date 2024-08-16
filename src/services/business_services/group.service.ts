@@ -6,7 +6,8 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utils_services/clou
 import { IUser, IUserRepository } from "../../interfaces/business_interfaces/IUser";
 import StatusError from "../../utils/statusError";
 import { ObjectId } from "mongoose";
-import { GroupTypes } from "../../enums/grpoupTypes.enum";
+import { GroupTypes } from "../../enums/groupTypes.enum";
+import { group } from "console";
 
 dotenv.config();
 
@@ -59,28 +60,45 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
     async getGroups(user: IUser, type?: any) {
       
   
+      let deletionFlag = false;
         const { _id } = user;
         let query: Record<string, any> = {};
     
         switch (type) {
             case GroupTypes.Public:
-                query = { isPrivate: false, members: { $ne: _id } };
-                break;
+                query = { isPrivate: false, _id: { $in: user.groups } };
+                break;  
             case GroupTypes.Membership:
                 query = { 
-                    members: { $elemMatch: { id: _id } }, 
+                    _id: { $in: user.groups },
                     createdBy: { $ne: _id } 
                 };
                 break;
             case GroupTypes.Ownership:
-                query = { createdBy: _id };
+                query = { _id: { $in: user.groups }, createdBy: _id };
                 break;
             default:
-                query = { members: { $elemMatch: { id: _id } } };
+                deletionFlag = true;
+                query = { _id: { $in: user.groups } };
                 break;
         }
     
-        return await this.groupRepository.getGroups(query);
+        const groups = await this.groupRepository.getGroups(query);
+
+      
+        if (deletionFlag && groups.length !== user.groups.length) {
+          const existingGroupIds = groups.map(group => group._id.toString());
+
+          const extraGroupIds = user.groups.filter(groupId => !existingGroupIds.includes(groupId.toString()));
+
+          if (extraGroupIds.length > 0) {
+              user.groups = user.groups.filter(groupId => !extraGroupIds.includes(groupId));
+
+              await this.userRepository.updateUser(user);
+          }
+      }
+
+      return groups;
     }
     
 
@@ -231,6 +249,15 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
     
           await this.groupRepository.updateGroup(group);
 
+    }
+
+    async searchForPublicGroups(groupName: string){
+
+      if(!groupName) throw new StatusError(400, "groupName is required.");
+
+      const groups = await this.groupRepository.getGroups({isPrivate: false, groupName: {$regex: groupName, $options: "i"}});
+
+      return groups;
     }
 } 
 
