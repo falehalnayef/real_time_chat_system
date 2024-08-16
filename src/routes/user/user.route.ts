@@ -84,6 +84,10 @@ class UserRoute {
       .patch("/block", checkUser, this.userController.unblockUser)
       .bind(this.userController);
 
+      this.router
+      .get("/block", checkUser, this.userController.getUserBlockedUsers)
+      .bind(this.userController);
+
     
   }
   

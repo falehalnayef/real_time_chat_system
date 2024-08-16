@@ -311,4 +311,23 @@ export class UserController {
     }
   }
 
+  
+  async getUserBlockedUsers(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const userId = req.auth!.user._id;
+
+
+      const blockedUsers = this.userService.getUserBlockedUsers(userId);
+
+      res.status(200).send(successResponse("BlockedUsers.", await blockedUsers));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
 } 

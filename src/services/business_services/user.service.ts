@@ -248,4 +248,8 @@ constructor(userRepository: IUserRepository){
       async getUserContacts(userId: ObjectId){
         return this.userRepository.getUserContactsById(userId);
       }
+
+      async getUserBlockedUsers(userId: ObjectId){
+        return this.userRepository.getUserBlockedUsersById(userId);
+      }
 } 

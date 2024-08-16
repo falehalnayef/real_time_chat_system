@@ -54,6 +54,14 @@ export class UserRepository implements IUserRepository {
     }).select("contacts");
   }
 
+  async getUserBlockedUsersById(
+    _id: ObjectId
+  ): Promise<any> {
+    return await this.userModel.model.findOne({
+      _id
+    }).select("blockedUsers");
+  }
+
   
   async getUserByOTP(
     otp: string
