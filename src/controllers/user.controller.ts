@@ -272,4 +272,24 @@ export class UserController {
     } catch (error: any) {
       next(error);
     }
-  }} 
+  }
+
+  async searchForUsers(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+
+      const {email, userName} = req.query;
+
+      const users = this.userService.searchForUsers(email as string, userName as string);
+
+      res.status(200).send(successResponse("Users.", await users));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+} 

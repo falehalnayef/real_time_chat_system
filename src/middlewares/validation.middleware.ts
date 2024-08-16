@@ -157,5 +157,33 @@ export function groupInfoEditingValidator(req: AuthenticatedRequest, _res: Respo
         
         next(error);
     }
+}
 
+
+    
+export function userSearchValidator(req: AuthenticatedRequest, _res: Response, next: NextFunction){
+
+    try {
+
+
+        const {email, userName} = req.query;
+
+
+        if(!email && !userName) throw new StatusError(400, "Enter email or userName.");
+
+        if(email){
+            if(!isValidEmail(email as string)) throw new StatusError(400, "Invalid email format.");
+        }
+
+        if(userName){
+            if(!isValidName(userName as string)) throw new StatusError(400, "Invalid userName format.");
+        }
+     
+        next()
+
+
+    } catch (error: any) {
+        
+        next(error);
+    }
 }

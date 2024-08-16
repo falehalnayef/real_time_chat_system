@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../../controllers/user.controller";
-import { forgotPasswordValidator, loginValidator, profileEditingValidator, registerValidator, resetPasswordValidator } from "../../middlewares/validation.middleware";
+import { forgotPasswordValidator, loginValidator, profileEditingValidator, registerValidator, resetPasswordValidator, userSearchValidator } from "../../middlewares/validation.middleware";
 import { UserService } from "../../services/business_services/user.service";
 import { UserRepository } from "../../database/repositories/user.repository";
 import { checkUser } from "../../middlewares/auth.middleware";
@@ -24,7 +24,11 @@ class UserRoute {
       .bind(this.userController);
 
       this.router   
-      .post("/", uploadMiddleware, registerValidator, this.userController.getUsersWithPagination)
+      .get("/", this.userController.getUsersWithPagination)
+      .bind(this.userController);
+
+      this.router   
+      .get("/search", userSearchValidator, this.userController.searchForUsers)
       .bind(this.userController);
 
       this.router   

@@ -215,6 +215,8 @@ constructor(userRepository: IUserRepository){
       
         async getUsersWithPagination(page: number, limit: number) {
 
+          if(!page || !limit) throw new StatusError(400, "page and limit are required.");
+          
         if (page < 1) page = 1;
         if (limit < 1) limit = 10;
 
@@ -226,5 +228,16 @@ constructor(userRepository: IUserRepository){
           ]);
           return { users, total };
       }
-      
+
+      async searchForUsers(email: string, userName: string){
+
+        if(email){
+          const users = await this.userRepository.getUsers({email: {$regex: email, $options: "i"}});
+          return users;
+
+        } else {
+          const users = await this.userRepository.getUsers({userName: {$regex: userName, $options: "i"}});
+          return users;
+        }
+      }      
 } 
