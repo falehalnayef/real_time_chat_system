@@ -177,4 +177,26 @@ export class GroupController {
       next(error);
     }
   }
+
+
+  async getGroups(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+        const user = req.auth!.user;
+
+      const { type } = req.query;
+
+     const groups = this.groupService.getGroups(user, type);
+
+      res.status(200).send(successResponse("Groups.", await groups));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
 } 
+  

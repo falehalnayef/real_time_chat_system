@@ -25,6 +25,10 @@ class GroupRoute {
       .bind(this.groupController);
 
       this.router   
+      .get("/", checkUser, this.groupController.getGroups)
+      .bind(this.groupController);
+
+      this.router   
       .delete("/:groupId", checkUser, this.groupController.removeGroup)
       .bind(this.groupController);
 
