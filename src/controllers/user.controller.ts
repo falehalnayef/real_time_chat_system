@@ -255,4 +255,21 @@ export class UserController {
       next(error);
     }
   }
-} 
+
+  async getUsersWithPagination(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+
+      const {page, limit} = req.body;
+
+      const users = this.userService.getUsersWithPagination(page, limit);
+
+      res.status(200).send(successResponse("Users.", await users));
+    } catch (error: any) {
+      next(error);
+    }
+  }} 

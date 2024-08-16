@@ -24,6 +24,10 @@ class UserRoute {
       .bind(this.userController);
 
       this.router   
+      .post("/", uploadMiddleware, registerValidator, this.userController.getUsersWithPagination)
+      .bind(this.userController);
+
+      this.router   
       .post("/verification", this.userController.verifyAccount)
       .bind(this.userController);
 

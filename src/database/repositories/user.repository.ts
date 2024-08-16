@@ -63,4 +63,16 @@ record
 
 });
   }
+
+
+  async getUsers(where: Object, skip?: number, limit?: number): Promise<any> {
+    if(skip && limit){
+      return await this.userModel.model.find(where).skip(skip).limit(limit);
+    }
+    return await this.userModel.model.find(where);
+  }
+
+  async countUsers(where: Object): Promise<Number> {
+    return await this.userModel.model.countDocuments(where);
+  }
 }

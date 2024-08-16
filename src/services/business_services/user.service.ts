@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import { sendEmail } from "../utils_services/mail.service";
 import { generateOTP } from "../utils_services/otp-generator.service";
 import { generateToken, verifyToken } from "../utils_services/jwt.service";
-import { User } from "../../dto/user.dto";
 import { ObjectId } from "mongoose";
 dotenv.config();
 
@@ -93,7 +92,7 @@ constructor(userRepository: IUserRepository){
 
         await deleteFromCloudinary(public_id);
 
-           user.photoPath      = url;
+           user.photoPath = url;
         
           }
 
@@ -213,7 +212,19 @@ constructor(userRepository: IUserRepository){
 
         }
 
-     
+      
+        async getUsersWithPagination(page: number, limit: number) {
 
+        if (page < 1) page = 1;
+        if (limit < 1) limit = 10;
 
+          const skip = (page - 1) * limit;
+      
+          const [users, total] = await Promise.all([
+              this.userRepository.getUsers({}, skip, limit),
+              this.userRepository.countUsers({})
+          ]);
+          return { users, total };
+      }
+      
 } 
