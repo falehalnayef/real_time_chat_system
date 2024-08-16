@@ -48,7 +48,7 @@ export class UserRepository implements IUserRepository {
 
   async getUserContactsById(
     _id: ObjectId
-  ): Promise<any> {
+  ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
     }).select("contacts");
@@ -56,7 +56,7 @@ export class UserRepository implements IUserRepository {
 
   async getUserBlockedUsersById(
     _id: ObjectId
-  ): Promise<any> {
+  ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
     }).select("blockedUsers");
@@ -82,7 +82,7 @@ record
   }
 
 
-  async getUsers(where: Object, skip?: number, limit?: number): Promise<any> {
+  async getUsers(where: Object, skip?: number, limit?: number): Promise<IUser[]> {
     if(skip && limit){
       return await this.userModel.model.find(where).skip(skip).limit(limit);
     }

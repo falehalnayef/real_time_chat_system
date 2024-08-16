@@ -1,7 +1,8 @@
-import mongoose, { Model, Schema, Document } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
+import { IUser } from "../../interfaces/business_interfaces/IUser";
 
 export class UserModel {
-  private static _model: Model<Document>;
+  private static _model: Model<IUser>;
 
   constructor() {
     if (!UserModel._model) {
@@ -23,11 +24,11 @@ export class UserModel {
       schema.index({ userName: 1 });
       schema.index({ groups: 1 });
 
-      UserModel._model = mongoose.model<Document>("User", schema);
+      UserModel._model = mongoose.model<IUser>("User", schema);
     }
   }
 
-  public get model(): Model<Document> {
+  public get model(): Model<IUser> {
     return UserModel._model;
   }
 }

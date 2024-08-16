@@ -27,13 +27,13 @@ export class GroupRepository implements IGroupRepository {
     isPrivate: boolean,
     bio?: string,
     photoPath?: string,
-  ): Promise<any> {
+  ): Promise<IGroup> {
     return await this.groupModel.model.create({ groupName, bio, photoPath, createdBy, isPrivate});
   }
 
   async getGroupById(
     _id: string
-  ): Promise<any> {
+  ): Promise<IGroup | null> {
     return await this.groupModel.model.findOne({
       _id
     }).select("_id groupName isPrivate");
@@ -42,7 +42,7 @@ export class GroupRepository implements IGroupRepository {
 
   async getGroupInfoById(
     _id: string
-  ): Promise<any> {
+  ): Promise<IGroup | null> {
     return await this.groupModel.model.findOne({
       _id
     });

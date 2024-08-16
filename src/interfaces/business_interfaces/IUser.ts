@@ -1,6 +1,6 @@
-import {ObjectId } from "mongoose";
+import {Document, ObjectId } from "mongoose";
 
-export interface IUser {
+export interface IUser extends Document {
   _id: ObjectId;
   userName: string;
   email: string;
@@ -34,9 +34,9 @@ export interface IUserRepository{
 
   countUsers(where: Object): Promise<Number>;
 
-  getUserContactsById(_id: ObjectId): Promise<IUser[]>;
+  getUserContactsById(_id: ObjectId): Promise<IUser | null>;
 
-  getUserBlockedUsersById(_id: ObjectId): Promise<IUser[]>;
+  getUserBlockedUsersById(_id: ObjectId): Promise<IUser | null>;
 
 }
 

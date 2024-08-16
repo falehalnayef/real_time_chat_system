@@ -1,7 +1,8 @@
-import mongoose, { Model, Schema, Document } from "mongoose";
+import mongoose, { Model, Schema } from "mongoose";
+import { IGroup } from "../../interfaces/business_interfaces/IGroup";
 
 export class GroupModel {
-  private static _model: Model<Document>;
+  private static _model: Model<IGroup>;
 
   constructor() {
     const schema = new Schema({
@@ -17,10 +18,10 @@ export class GroupModel {
     schema.index({ groupName: 1 });
     schema.index({ members: 1 });
 
-    GroupModel._model = mongoose.model<Document>("Group", schema);
+    GroupModel._model = mongoose.model<IGroup>("Group", schema);
 
   }
-  public get model(): Model<Document> {
+  public get model(): Model<IGroup> {
     return GroupModel._model;
   }
 }

@@ -305,7 +305,7 @@ export class UserController {
 
       const contacts = this.userService.getUserContacts(userId);
 
-      res.status(200).send(successResponse("Contacts.", await contacts));
+      res.status(200).send(successResponse("Contacts.", {friends: await contacts}));
     } catch (error: any) {
       next(error);
     }
@@ -324,7 +324,7 @@ export class UserController {
 
       const blockedUsers = this.userService.getUserBlockedUsers(userId);
 
-      res.status(200).send(successResponse("BlockedUsers.", await blockedUsers));
+      res.status(200).send(successResponse("BlockedUsers.", {blockedUsers: await blockedUsers}));
     } catch (error: any) {
       next(error);
     }

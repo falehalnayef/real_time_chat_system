@@ -1,6 +1,6 @@
-import { ObjectId } from "mongoose";
+import { ObjectId, Document } from "mongoose";
 
-export interface IGroup {
+export interface IGroup extends Document{
   _id: ObjectId;
   groupName: string;
   members: ObjectId[];
