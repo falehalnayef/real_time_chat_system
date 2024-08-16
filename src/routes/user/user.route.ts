@@ -73,12 +73,18 @@ class UserRoute {
       .bind(this.userController);
 
       this.router
+      .get("/contacts", checkUser, this.userController.getUserContacts)
+      .bind(this.userController);
+
+      this.router
       .post("/block", checkUser, this.userController.blockUser)
       .bind(this.userController);
 
       this.router
       .patch("/block", checkUser, this.userController.unblockUser)
       .bind(this.userController);
+
+    
   }
   
 }

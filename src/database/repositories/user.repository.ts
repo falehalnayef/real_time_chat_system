@@ -43,8 +43,17 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
-    }).select("_id name email pohtoPath bio groups contacts blockedUsers");
+    }).select("_id name email pohtoPath bio groups");
   }
+
+  async getUserContactsById(
+    _id: ObjectId
+  ): Promise<any> {
+    return await this.userModel.model.findOne({
+      _id
+    }).select("contacts");
+  }
+
   
   async getUserByOTP(
     otp: string

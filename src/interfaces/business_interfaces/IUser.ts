@@ -29,10 +29,13 @@ export interface IUserRepository{
   getUserByOTP(otp: string): Promise<IUser | null>;
 
   updateUser(record: IUser): Promise<void>;
-
+  
   getUsers(where: Object, skip?: Number, limit?: Number): Promise<IUser[]>;
 
   countUsers(where: Object): Promise<Number>;
+
+  getUserContactsById(_id: ObjectId): Promise<IUser[]>;
+
 }
 
 

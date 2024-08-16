@@ -292,4 +292,23 @@ export class UserController {
     }
   }
 
+
+  async getUserContacts(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+      const userId = req.auth!.user._id;
+
+
+      const contacts = this.userService.getUserContacts(userId);
+
+      res.status(200).send(successResponse("Contacts.", await contacts));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
 } 

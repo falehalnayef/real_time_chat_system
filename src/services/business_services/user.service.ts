@@ -243,5 +243,9 @@ constructor(userRepository: IUserRepository){
           const users = await this.userRepository.getUsers({userName: {$regex: userName, $options: "i"}});
           return users;
         }
-      }      
+      }    
+      
+      async getUserContacts(userId: ObjectId){
+        return this.userRepository.getUserContactsById(userId);
+      }
 } 
