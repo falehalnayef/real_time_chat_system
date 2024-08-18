@@ -8,6 +8,7 @@ import { sendEmail } from "../utils_services/mail.service";
 import { generateOTP } from "../utils_services/otp-generator.service";
 import { generateToken, verifyToken } from "../utils_services/jwt.service";
 import { ObjectId } from "mongoose";
+import { isNumberObject } from "util/types";
 dotenv.config();
 
 export class UserService{
@@ -17,7 +18,7 @@ private userRepository: IUserRepository;
 
 constructor(userRepository: IUserRepository){
     this.userRepository = userRepository;
-}
+} 
      async register(userName: string, email: string, password: string, bio: string, image: FileInfo) {
 
 
@@ -32,6 +33,28 @@ constructor(userRepository: IUserRepository){
         await this.userRepository.addUser(userName, email, await hashedPassword, otpObject.code, otpObject.otpExpiresIn, bio, url);
 
         sendEmail(email, "Account verification.", `OTP to verify your account is: ${otpObject.code} \n it expires in 5 minutes`);
+
+      }
+
+      async sendNewOtp(email: string) {
+
+        if(!email) throw new StatusError(400, "EMAIL is required");   
+
+        const user = await this.userRepository.getUserByEmail(email);
+        if(!user) throw new StatusError(401, "Email not found.");
+
+        if(user.isActive) throw new StatusError(400, "User is already active.");
+      
+        const otpObject = generateOTP();
+
+        user.otp = otpObject.code;
+        user.otpExpiresIn = otpObject.otpExpiresIn;
+
+        await this.userRepository.updateUser(user);
+
+        sendEmail(email, "Account verification.", `OTP to verify your account is: ${otpObject.code} \n it expires in 5 minutes`);
+
+
 
       }
 
@@ -117,7 +140,7 @@ constructor(userRepository: IUserRepository){
 
           if(!(await checkPass)) throw new StatusError(401, "Invalid credentials.");
 
-          const hashedPassword = hashData(newPassword);
+          const hashedPassword = hashData(newPassword);   
 
           user.password = await hashedPassword;
 
@@ -130,23 +153,24 @@ constructor(userRepository: IUserRepository){
           if(!email) throw new StatusError(400, "Email is required.");
           const user = await this.userRepository.getUserByEmail(email);
         
-          if (!user) throw new StatusError(404, "User not found.");
+          if (!user) throw new StatusError(404, "Email not found.");
         
           const resetToken = generateToken(user._id, process.env.JWT_RESETPASSWORD_SECRET!, process.env.JWT_RESETPASSWORD_EXPIRATION_TIME!);
         
           user.resetPasswordToken = resetToken;
       
-          await this.userRepository.updateUser(user);
+           await this.userRepository.updateUser(user);
         
           await sendEmail(user.email, "Password Reset", `Your password reset token is: ${resetToken}`);
         }
 
         async resetForgottenPassword(resetToken: string, newPassword: string) {
         
-        
           const decoded = verifyToken(resetToken, process.env.JWT_RESETPASSWORD_SECRET!);
         
+
           const user = await this.userRepository.getUserById(decoded._id);
+
         
           if (!user || (user.resetPasswordToken !== resetToken)) throw new StatusError(400, "Invalid or expired reset token.");
         
@@ -178,18 +202,32 @@ constructor(userRepository: IUserRepository){
         async addFriend(user: IUser, friendId: ObjectId){
 
           if(!friendId) throw new StatusError(400, "UserId is required.");
+          if(user.id === friendId) throw new StatusError(400, "You can not add yourself.");
+
           const friend = await this.userRepository.getUserById(friendId);
           if(!friend) throw new StatusError(404, "User not found.");
-          user.contacts.push(friendId);
+        
+      
+          const e = user.contacts.filter((id) => id == friendId);
+
+          if (e.length != 0) throw new StatusError(400, "This user is already in your contacts.");
+          
+
+          user.contacts.push(friendId);   
           await this.userRepository.updateUser(user);
 
         }
+
         async removeFriend(user: IUser, friendId: ObjectId){
 
           if(!friendId) throw new StatusError(400, "UserId is required.");
           const friend = await this.userRepository.getUserById(friendId);
           if(!friend) throw new StatusError(404, "User not found.");
-          user.contacts = user.contacts.filter((id) => id !== friendId);
+          
+          
+              user.contacts = user.contacts.filter((id) => id.toString() !== friendId.toString());
+          
+          
           await this.userRepository.updateUser(user);
 
         } 
@@ -197,8 +235,16 @@ constructor(userRepository: IUserRepository){
         async blockUser(user: IUser, userId: ObjectId){
 
           if(!userId) throw new StatusError(400, "UserId is required.");
+
+          if(user.id === userId) throw new StatusError(400, "You can not block yourself.");
+
           const userToBlock = await this.userRepository.getUserById(userId);
           if(!userToBlock) throw new StatusError(404, "User not found.");
+         
+          const e = user.blockedUsers.filter((id) => id == userId);
+
+          if (e.length != 0) throw new StatusError(400, "This user is already blocked.");
+
           user.blockedUsers.push(userId);
           await this.userRepository.updateUser(user);
 
@@ -211,13 +257,13 @@ constructor(userRepository: IUserRepository){
           if(!userId) throw new StatusError(400, "UserId is required.");
           const userToUnblock = await this.userRepository.getUserById(userId);
           if(!userToUnblock) throw new StatusError(404, "User not found.");
-          user.blockedUsers = user.blockedUsers.filter((id) => id !== userId);
+          user.blockedUsers = user.blockedUsers.filter((id) => id.toString() !== userId.toString());
           await this.userRepository.updateUser(user);
 
         }
 
       
-        async getUsersWithPagination(page: number, limit: number) {
+        async getUsersWithPagination(user: IUser, page: number, limit: number) {
 
           if(!page || !limit) throw new StatusError(400, "page and limit are required.");
           
@@ -226,30 +272,43 @@ constructor(userRepository: IUserRepository){
 
           const skip = (page - 1) * limit;
       
-          const [users, total] = await Promise.all([
-              this.userRepository.getUsers({}, skip, limit),
-              this.userRepository.countUsers({})
+          let [users, total] = await Promise.all([
+              this.userRepository.getUsers({_id:{$ne: user._id}, isActive: true}, skip, limit),
+              this.userRepository.countUsers({isActive: true})
           ]);
-          return { users, total };
-      }
+          total -= 1;
+          return { users, total };                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+      } 
 
-      async searchForUsers(email: string, userName: string){
+      async searchForUsers(user: IUser, email: string, userName: string) {
+      
+        let query: any= { _id: { $ne: user._id }, isActive: true };
 
-        if(email){
-          const users = await this.userRepository.getUsers({email: {$regex: email, $options: "i"}});
-          return users;
-
-        } else {
-          const users = await this.userRepository.getUsers({userName: {$regex: userName, $options: "i"}});
-          return users;
+        if (email) {
+          query.email = 
+          { $regex: email, $options: "i" };
         }
-      }    
+
+        if (userName) {
+          query.userName = { $regex: userName, $options: "i" };
+        }
+
+        const users = await this.userRepository.getUsers(query);
+        return users;
+      }
       
       async getUserContacts(userId: ObjectId){
-        return this.userRepository.getUserContactsById(userId);
+        const obj = await this.userRepository.getUserContactsById(userId);
+        const contacts = obj!.contacts;
+
+        return await this.userRepository.getUsers({_id:{$in:contacts}});
       }
 
       async getUserBlockedUsers(userId: ObjectId){
-        return this.userRepository.getUserBlockedUsersById(userId);
+        const obj = await this.userRepository.getUserBlockedUsersById(userId);
+
+        const blockedUsers = obj!.blockedUsers;   
+
+        return await this.userRepository.getUsers({_id:{$in:blockedUsers}});
       }
 } 

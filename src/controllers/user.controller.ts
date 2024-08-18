@@ -7,8 +7,28 @@ import { User } from "../dto/user.dto";
 export class UserController {
   private userService: UserService;
   constructor(userService: UserService) {
-    this.userService = userService;
+    this.userService = userService; 
     this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+    this.sendNewOtp = this.sendNewOtp.bind(this);
+    this.showProfile = this.showProfile.bind(this);
+    this.editProfile = this.editProfile.bind(this);
+    this.verifyAccount = this.verifyAccount.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.sendForgotPasswordToken = this.sendForgotPasswordToken.bind(this);
+    this.forgotPassword = this.forgotPassword.bind(this);
+    this.addFriend = this.addFriend.bind(this);
+    this.removeFriend = this.removeFriend.bind(this);
+    this.blockUser = this.blockUser.bind(this);   
+    this.unblockUser = this.unblockUser.bind(this);
+    this.getUsersWithPagination = this.getUsersWithPagination.bind(this);
+    this.searchForUsers = this.searchForUsers.bind(this);
+    this.getUserContacts = this.getUserContacts.bind(this);
+    this.getUserBlockedUsers = this.getUserBlockedUsers.bind(this);
+    this.generateNewTokens = this.generateNewTokens.bind(this);
+
+
+
 
   }
 
@@ -42,6 +62,23 @@ export class UserController {
       const data = await this.userService.login(email, password);
 
       res.status(200).send(successResponse("User is logged in.", data));
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
+
+  async sendNewOtp(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { email } = req.body;
+
+      await this.userService.sendNewOtp(email);
+
+      res.status(200).send(successResponse("check your email."));
     } catch (error: any) {
       next(error);
     }
@@ -237,7 +274,8 @@ export class UserController {
     }
   }
 
-  async unblockUser(
+  async unblockUser
+  (
     req: IAuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -264,9 +302,10 @@ export class UserController {
     try {
 
 
-      const {page, limit} = req.body;
+      const user = req.auth!.user;
+      const {page, limit} = req.query;
 
-      const users = this.userService.getUsersWithPagination(page, limit);
+      const users = this.userService.getUsersWithPagination(user, Number(page), Number(limit)); 
 
       res.status(200).send(successResponse("Users.", await users));
     } catch (error: any) {
@@ -281,10 +320,11 @@ export class UserController {
   ) {
     try {
 
+      const user = req.auth!.user;
 
       const {email, userName} = req.query;
 
-      const users = this.userService.searchForUsers(email as string, userName as string);
+      const users = this.userService.searchForUsers(user, email as string, userName as string);
 
       res.status(200).send(successResponse("Users.", await users));
     } catch (error: any) {

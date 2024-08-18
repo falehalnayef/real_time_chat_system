@@ -32,7 +32,7 @@ export interface IUserRepository{
 
   getUsers(where: Object, skip?: Number, limit?: Number): Promise<IUser[]>;
 
-  countUsers(where: Object): Promise<Number>;
+  countUsers(where: Object): Promise<number>;
 
   getUserContactsById(_id: ObjectId): Promise<IUser | null>;
 

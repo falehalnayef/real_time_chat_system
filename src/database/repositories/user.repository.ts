@@ -26,7 +26,7 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       email
-    }).select("_id name password isActive");
+    }).select("_id name password isActive otp otpExpiresIn");
   }
 
   async getUserById(
@@ -34,16 +34,16 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
-    }).select("_id isActive");
+    }).select("_id isActive password resetPasswordToken contacts blockedUsers");
   }
 
 
-  async getUserProfileById(
+  async getUserProfileById( 
     _id: ObjectId
   ): Promise<IUser | null> {
-    return await this.userModel.model.findOne({
+    return await this.userModel.model.findOne({ 
       _id
-    }).select("_id name email pohtoPath bio groups");
+    }).select("_id name email photoPath bio groups");
   }
 
   async getUserContactsById(
@@ -71,25 +71,31 @@ export class UserRepository implements IUserRepository {
     }).select("_id otp otpExpiresIn isActive");
   }
 
-
   async updateUser(
     record: IUser
   ): Promise<void> {
-     await this.userModel.model.updateOne({
-record
-
-});
+    await this.userModel.model.updateOne(
+      { _id: record._id },
+      { $set: record }
+    );
   }
 
 
   async getUsers(where: Object, skip?: number, limit?: number): Promise<IUser[]> {
-    if(skip && limit){
-      return await this.userModel.model.find(where).skip(skip).limit(limit);
+    const query = this.userModel.model.find(where).select("_id userName email photoPath bio");
+    
+    if (typeof skip === 'number') {
+      query.skip(skip);
     }
-    return await this.userModel.model.find(where);
+    
+    if (typeof limit === 'number') {
+      query.limit(limit);
+    }
+    
+    return await query.exec();
   }
 
-  async countUsers(where: Object): Promise<Number> {
+  async countUsers(where: Object): Promise<number> {
     return await this.userModel.model.countDocuments(where);
   }
 }

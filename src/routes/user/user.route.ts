@@ -24,11 +24,15 @@ class UserRoute {
       .bind(this.userController);
 
       this.router   
-      .get("/", this.userController.getUsersWithPagination)
+      .get("/", checkUser, this.userController.getUsersWithPagination)
       .bind(this.userController);
 
       this.router   
-      .get("/search", userSearchValidator, this.userController.searchForUsers)
+      .post("/otp", this.userController.sendNewOtp)
+      .bind(this.userController);
+
+      this.router   
+      .get("/search", checkUser, userSearchValidator, this.userController.searchForUsers)
       .bind(this.userController);
 
       this.router   
@@ -51,12 +55,12 @@ class UserRoute {
       .post("/password", checkUser, resetPasswordValidator, this.userController.resetPassword)
       .bind(this.userController);
 
-      this.router
-      .post("/forgot-password-token", checkUser, this.userController.sendForgotPasswordToken)
+      this.router 
+      .post("/forgot-password-token" , this.userController.sendForgotPasswordToken)
       .bind(this.userController);
 
       this.router
-      .post("/password/forgotten/:resetToken", checkUser, forgotPasswordValidator, this.userController.forgotPassword)
+      .post("/password/forgotten/:resetToken", forgotPasswordValidator, this.userController.forgotPassword)
       .bind(this.userController);
 
       this.router

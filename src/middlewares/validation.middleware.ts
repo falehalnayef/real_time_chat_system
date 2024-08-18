@@ -15,8 +15,7 @@ export function registerValidator(req: AuthenticatedRequest, _res: Response, nex
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
         if(!isValidPassword(password)) throw new StatusError(400, "Invalid password format.");
 
-        next()
-
+                next();
 
     } catch (error: any) {
         
@@ -37,8 +36,7 @@ export function loginValidator(req: AuthenticatedRequest, _res: Response, next: 
         if(!isValidEmail(email)) throw new StatusError(400, "Invalid email format.");
         if(!isValidPassword(password)) throw new StatusError(400, "Invalid password format.");
 
-        next()
-
+                next();
 
     } catch (error: any) {
         
@@ -62,8 +60,7 @@ export function profileEditingValidator(req: AuthenticatedRequest, _res: Respons
             if(!isValidName(userName)) throw new StatusError(400, "Invalid userName format.");
         }
      
-        next()
-
+                next();
 
     } catch (error: any) {
         
@@ -83,7 +80,7 @@ export function resetPasswordValidator(req: AuthenticatedRequest, _res: Response
         if(!isValidPassword(oldPassword)) throw new StatusError(400, "Invalid old password format.");
         if(!isValidPassword(newPassword)) throw new StatusError(400, "Invalid new password format.");
 
-        next()
+                next();
 
     } catch (error: any) {
         
@@ -104,6 +101,7 @@ export function forgotPasswordValidator(req: AuthenticatedRequest, _res: Respons
 
         if(!isValidPassword(newPassword)) throw new StatusError(400, "Invalid new password format.");
 
+                next();
     } catch (error: any) {
         
         next(error);
@@ -121,8 +119,7 @@ export function groupCreationValidator(req: AuthenticatedRequest, _res: Response
 
         if(!isValidName(groupName)) throw new StatusError(400, "Invalid groupName format.");
 
-        next()
-        
+                next();        
 
     } catch (error: any) {
         
@@ -148,8 +145,7 @@ export function groupInfoEditingValidator(req: AuthenticatedRequest, _res: Respo
             if(!isValidName(groupName)) throw new StatusError(400, "Invalid groupName format.");
         }
      
-        next()
-
+                next();
 
     } catch (error: any) {
         
@@ -177,11 +173,11 @@ export function userSearchValidator(req: AuthenticatedRequest, _res: Response, n
             if(!isValidName(userName as string)) throw new StatusError(400, "Invalid userName format.");
         }
      
-        next()
-
+                next();
 
     } catch (error: any) {
         
         next(error);
     }
 }
+    
