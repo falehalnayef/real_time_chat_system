@@ -29,6 +29,10 @@ class GroupRoute {
       .bind(this.groupController);
 
       this.router   
+      .get("/search", checkUser, this.groupController.searchForPublicGroups)
+      .bind(this.groupController);
+        
+      this.router   
       .delete("/:groupId", checkUser, this.groupController.removeGroup)
       .bind(this.groupController);
 
@@ -58,9 +62,7 @@ class GroupRoute {
       .put("/:groupId", checkUser, uploadMiddleware, groupInfoEditingValidator, this.groupController.editGroupInfo)
       .bind(this.groupController);
 
-      this.router   
-      .get("/search", checkUser, this.groupController.searchForPublicGroups)
-      .bind(this.groupController);  
+   
   }
 
   

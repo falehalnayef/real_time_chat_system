@@ -34,7 +34,7 @@ export class UserRepository implements IUserRepository {
   ): Promise<IUser | null> {
     return await this.userModel.model.findOne({
       _id
-    }).select("_id isActive password resetPasswordToken contacts blockedUsers");
+    }).select("_id isActive password resetPasswordToken contacts blockedUsers groups");
   }
 
 

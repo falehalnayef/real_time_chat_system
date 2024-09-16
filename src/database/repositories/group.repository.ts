@@ -51,9 +51,9 @@ export class GroupRepository implements IGroupRepository {
   async updateGroup(
     record: IGroup
   ): Promise<void> {
-     await this.groupModel.model.updateOne({
-record
-
-});
+    await this.groupModel.model.updateOne(
+      { _id: record._id },
+      { $set: record }
+    );
   }
 }

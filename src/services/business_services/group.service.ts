@@ -50,7 +50,7 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const group = await this.groupRepository.getGroupInfoById(groupId);
         if(!group) throw new StatusError(404, "Group not found.");
 
-        if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
+        if(String(group.createdBy) != String(user._id)) throw new StatusError(403, "unauthorized");
 
         const public_id = group.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
 
@@ -69,22 +69,21 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
     
         switch (type) {
             case GroupTypes.Public:
-                query = { isPrivate: false, _id: { $in: user.groups } };
+                query = { isPrivate: false};
                 break;  
             case GroupTypes.Membership:
                 query = { 
-                    _id: { $in: user.groups },
-                    createdBy: { $ne: _id } 
+                    _id: { $in: user.groups }
                 };
                 break;
             case GroupTypes.Ownership:
-                query = { _id: { $in: user.groups }, createdBy: _id };
+                query = { createdBy: _id };
                 break;
             default:
                 deletionFlag = true;
                 query = { _id: { $in: user.groups } };
                 break;
-        }
+        } 
     
         const groups = await this.groupRepository.getGroups(query);
 
@@ -112,11 +111,14 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const group = await this.groupRepository.getGroupInfoById(groupId);
         if(!group) throw new StatusError(404, "Group not found."); 
     
-        if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
+        if(String(group.createdBy) != String(user._id)) throw new StatusError(403, "unauthorized");
 
         const userToAdd = await this.userRepository.getUserProfileById(userId);
         if(!userToAdd) throw new StatusError(404,"User not found.");
     
+        const exis = group.members.filter((id) => String(id) == String(userId));
+        if(exis.length != 0) throw new StatusError(400, "User is already in the group");
+
         group.members.push(userToAdd._id);
         group.membersCount += 1;
         userToAdd.groups.push(group._id);
@@ -133,17 +135,17 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const group = await this.groupRepository.getGroupInfoById(groupId);
         if(!group) throw new StatusError(404, "Group not found."); 
     
-        if(user._id != group.createdBy) throw new StatusError(403, "unauthorized.");
+        if(String(group.createdBy) != String(user._id)) throw new StatusError(403, "unauthorized");
 
         const userToRemove = await this.userRepository.getUserProfileById(userId);
         if(!userToRemove) throw new StatusError(404,"User not found.");
     
 
-        group.members = group.members.filter((id) => id !== userId);
+        group.members = group.members.filter((id) => String(id) !== String(userId));
         group.membersCount -= 1;
-        userToRemove.groups = userToRemove.groups.filter((id) => id !== group._id);
+        userToRemove.groups = userToRemove.groups.filter((id) => String(id) !== String(group._id));
 
-        await this.groupRepository.updateGroup(group);
+        await this.groupRepository.updateGroup(group);  
         await this.userRepository.updateUser(userToRemove);
 
     }
@@ -163,6 +165,9 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const userToAdd = await this.userRepository.getUserProfileById(user._id);
         if(!userToAdd) throw new StatusError(404,"User not found.");
 
+        const exis = group.members.filter((id) => String(id) == String(user._id));
+        if(exis.length != 0) throw new StatusError(400, "User is already in the group");
+
 
         group.members.push(userToAdd._id);
         group.membersCount += 1;
@@ -181,8 +186,8 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
     
         const l1 = group.members.length;
 
-        group.members = group.members.filter((id) => id !== user._id);
-
+        group.members = group.members.filter((id) => String(id) !== String(user._id));
+      
         const l2 = group.members.length;
 
         if(l1 == l2) throw new StatusError(400, "User is not in the group."); 
@@ -192,7 +197,7 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const userToRemove = await this.userRepository.getUserProfileById(user._id);
         if(!userToRemove) throw new StatusError(404,"User not found.");
 
-        userToRemove.groups = userToRemove.groups.filter((id) => id !== group._id);
+        userToRemove.groups = userToRemove.groups.filter((id) => String(id) !== String(group._id));
 
         await this.groupRepository.updateGroup(group);
         await this.userRepository.updateUser(userToRemove);
@@ -224,7 +229,8 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         const group = await this.groupRepository.getGroupInfoById(groupId);
         if(!group) throw new StatusError(404, "Group not found.");
 
-        if(group.createdBy != user._id) throw new StatusError(403, "unauthorized");
+
+        if(String(group.createdBy) != String(user._id)) throw new StatusError(403, "unauthorized");
 
         if(groupName){         
             group.groupName = groupName;
@@ -249,7 +255,7 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
             group.isPrivate = isPrivate;
           }
 
-    
+
           await this.groupRepository.updateGroup(group);
 
     }

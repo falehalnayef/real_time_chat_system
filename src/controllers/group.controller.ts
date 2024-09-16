@@ -8,6 +8,17 @@ export class GroupController {
   private groupService: GroupService;
   constructor(groupService: GroupService) {
     this.groupService = groupService;
+    this.createGroup = this.createGroup.bind(this);
+    this.removeGroup = this.removeGroup.bind(this);
+    this.addUserToGroup = this.addUserToGroup.bind(this);
+    this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
+    this.joinPublicGroup = this.joinPublicGroup.bind(this);
+    this.leaveGroup = this.leaveGroup.bind(this);
+    this.getGroupInfo = this.getGroupInfo.bind(this);
+    this.editGroupInfo = this.editGroupInfo.bind(this);
+    this.getGroups = this.getGroups.bind(this);
+    this.searchForPublicGroups = this.searchForPublicGroups.bind(this);
+
 
   }
 
