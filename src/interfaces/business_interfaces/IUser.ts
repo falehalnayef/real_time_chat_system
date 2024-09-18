@@ -38,6 +38,8 @@ export interface IUserRepository{
 
   getUserBlockedUsersById(_id: ObjectId): Promise<IUser | null>;
 
+  delete( _id: string): Promise<void>;
+
 }
 
 

@@ -26,6 +26,7 @@ export class UserController {
     this.getUserContacts = this.getUserContacts.bind(this);
     this.getUserBlockedUsers = this.getUserBlockedUsers.bind(this);
     this.generateNewTokens = this.generateNewTokens.bind(this);
+    this.deleteAccount = this.deleteAccount.bind(this);
 
 
 
@@ -370,4 +371,22 @@ export class UserController {
     }
   }
 
+  async deleteAccount(
+    req: IAuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+
+
+      const user = req.auth!.user;
+
+      const {password} = req.body;
+      await this.userService.deleteAccount(user, password); 
+
+      res.status(200).send(successResponse("Account has been deleted."));
+    } catch (error: any) {
+      next(error);
+    }
+  }
 } 

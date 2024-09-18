@@ -98,4 +98,8 @@ export class UserRepository implements IUserRepository {
   async countUsers(where: Object): Promise<number> {
     return await this.userModel.model.countDocuments(where);
   }
+
+  async delete( _id: string): Promise<void> {
+    await this.userModel.model.deleteOne({_id});
+  }
 }

@@ -311,4 +311,16 @@ constructor(userRepository: IUserRepository){
 
         return await this.userRepository.getUsers({_id:{$in:blockedUsers}});
       }
+
+      async deleteAccount(user: IUser, password: string) {
+
+
+        const checkPass = compareData(password, user.password);
+
+        if(!(await checkPass)) throw new StatusError(401, "Wrong password.");
+
+        await this.userRepository.delete(String(user._id));
+
+      }
+
 } 

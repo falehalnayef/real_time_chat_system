@@ -51,10 +51,12 @@ constructor(groupRepository: IGroupRepository, userRepository: IUserRepository){
         if(!group) throw new StatusError(404, "Group not found.");
 
         if(String(group.createdBy) != String(user._id)) throw new StatusError(403, "unauthorized");
+        
+        if(group.photoPath){
+           const public_id = group.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
+           await deleteFromCloudinary(public_id);   
+          }
 
-        const public_id = group.photoPath.match(new RegExp(`${this.cloudinaryImageFolder}/(.*?)(?=\\.[^.]*$)`))?.[0]!;
-
-        await deleteFromCloudinary(public_id);
         await this.groupRepository.deleteGroup(groupId);
 
       }

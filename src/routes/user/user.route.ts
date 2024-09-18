@@ -92,6 +92,10 @@ class UserRoute {
       .get("/block", checkUser, this.userController.getUserBlockedUsers)
       .bind(this.userController);
 
+      this.router
+          .delete("/delete", checkUser, this.userController.deleteAccount)
+      .bind(this.userController);
+
     
   }
   
