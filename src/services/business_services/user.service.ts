@@ -8,7 +8,7 @@ import { sendEmail } from "../utils_services/mail.service";
 import { generateOTP } from "../utils_services/otp-generator.service";
 import { generateToken, verifyToken } from "../utils_services/jwt.service";
 import { ObjectId } from "mongoose";
-import { isNumberObject } from "util/types";
+import { io } from "socket.io-client";
 dotenv.config();
 
 export class UserService{
@@ -90,8 +90,8 @@ constructor(userRepository: IUserRepository){
           if(!user.isActive) throw new StatusError(401, "You must activate your account.");
           const accessToken = generateToken(user._id, process.env.JWT_ACCESS_SECRET!, process.env.JWT_ACCESS_EXPIRATION_TIME!);
           const refreshToken = generateToken(user._id, process.env.JWT_REFRESH_SECRET!, process.env.JWT_REFRESH_EXPIRATION_TIME!);
-
-
+          const socket = io();
+          socket.emit('register', user._id);
           return {id: user._id, name: user.userName, accessToken, refreshToken};
 
         }

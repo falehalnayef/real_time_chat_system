@@ -14,6 +14,7 @@ class IndexRouter {
     this.router.use("/users", userRoutes);
     this.router.use("/groups", groupRoutes);
 
+
   }
 } 
 

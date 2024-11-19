@@ -1,0 +1,94 @@
+        <html>
+        <body>
+            <h1>Peer-to-Peer and Group Messaging</h1>
+            <div>
+            <input id="username" placeholder="Enter your username" />
+            <button onclick="registerUser()">Register</button>
+            </div>
+            <div>
+            <input id="target" placeholder="Send to (username)" />
+            <input id="message" placeholder="Enter message" />
+            <button onclick="sendMessage()">Send Message</button>
+            </div>
+
+            <h2>Group Messaging</h2>
+            <div>
+            <input id="groupName" placeholder="Enter group name" />
+            <button onclick="joinGroup()">Join Group</button>
+            </div>
+            <div>
+            <input id="groupMessage" placeholder="Enter group message" />
+            <button onclick="sendGroupMessage()">Send Group Message</button>
+            </div>
+
+            <div id="messages"></div>
+
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+            const socket = io();
+            let username;
+            let currentGroup = null;
+
+            // Register user with a unique username
+            function registerUser() {
+                username = document.getElementById('username').value;
+                if (username) {
+                socket.emit('register', username);
+                alert(`User ${username} registered successfully`);
+                } else {
+                alert("Please enter a username");
+                }
+            }
+
+            // Send a private message to a specific user
+            function sendMessage() {
+                const target = document.getElementById('target').value;
+                const message = document.getElementById('message').value;
+
+                if (target && message) {
+                socket.emit('send_message', { to: target, message: message });
+                } else {
+                alert("Please enter both target us    ername and message");
+                }
+            }
+
+            // Send a message to the group
+            function sendGroupMessage() {
+                const message = document.getElementById('groupMessage').value;
+
+                if (currentGroup && message) {
+                socket.emit('send_group_message', { group: currentGroup, message: message });
+                } else {
+                alert("Please enter a message and join a group first");
+                }
+            }
+
+            // Join an existing group
+            function joinGroup() {
+                const groupName = document.getElementById('groupName').value;
+                if (groupName) {
+                socket.emit('join_group', groupName);
+                currentGroup = groupName;
+                } else {
+                alert("Please enter a group name");
+                }
+            }
+
+            // Listen for incoming private messages
+            socket.on('receive_message', (data) => {
+                const messageDiv = document.getElementById('messages');
+                const messageElement = document.createElement('p');
+                messageElement.textContent = `${data.from}: ${data.message}`;
+                messageDiv.appendChild(messageElement);
+            });
+
+            // Listen for incoming group messages
+            socket.on('receive_group_message', (data) => {
+                const messageDiv = document.getElementById('messages');
+                const messageElement = document.createElement('p');
+                messageElement.textContent = `[Group ${data.group}] ${data.from}: ${data.message}`;
+                messageDiv.appendChild(messageElement);
+            });
+            </script>
+        </body>
+        </html>
